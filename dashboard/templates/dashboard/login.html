@@ -1,4 +1,4 @@
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
@@ -6,30 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link rel="icon" href="../../favicon.ico"> -->
-    <title>SAMS - Sign in</title>
-    <link href="./static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="./static/css/dashboard.css" rel="stylesheet">
+    <title>学生活动管理系统 - 登录</title>
+    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
   </head>
 
   <body>
 
     <div class="container">
 
-      <form class="form-signin">
+      <form class="form-signin" action='/dashboard/login/' method='post'>
+        {% csrf_token %}
         <h2 class="form-signin-heading text-center">学生活动管理系统</h2>
         <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" id="inputUsername" class="form-control" placeholder="用户名" required autofocus>
+        <input type="text" id="uname" name="uname" class="form-control" placeholder="用户名" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="密码" required>
-        <!-- <div class="checkbox">
-          <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
-        </div> -->
+        <input type="password" id="pwd" name="pwd" class="form-control" placeholder="密码" required>
         <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
       </form>
-
+      {% if info %}<p><strong>{{ info }}</strong></p>{% endif %}
     </div> 
-
+    <!-- <script type="text/javascript" src="{% static 'alice/javascript/form_check.js' %}"></script> -->
   </body>
 </html>
