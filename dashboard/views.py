@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db import models
@@ -50,11 +51,13 @@ def index(request):
 
 @login_required
 def stu_manager(request):
-    return render(request, 'dashboard/stu_manager.html')
+    stus_list = Student.objects.all()
+    return render(request, 'dashboard/stu_manager.html', { 'stus_list': stus_list })
 
 @login_required
 def account_manager(request):
-    return render(request, 'dashboard/account_manager.html')
+    accounts_list = User.objects.all()
+    return render(request, 'dashboard/account_manager.html', { 'accounts_list': accounts_list })
 
 def create_student(request):
     if request.POST:
@@ -89,7 +92,7 @@ def create_student(request):
             else:
                 new_user = User.objects.create_user(username=username, password=password, first_name=stu_name, account=student)
                 new_user.save()
-            return HttpResponse('Student and login account create success.username is: ' + username + ' , and password is: ' + password )
+            return HttpResponse('学生对象和系统登陆账户创建成功.用户名为: ' + username + ' , 密码为: ' + password )
             #return render(request, centre_page, {'result_for_cs': 'Student and login account create success.username is: ' + username + ' , and password is: ' + password })
         #return render(request, centre_page, { 'result': [stu_id, stu_name, sex, depart, major, en_year, school_year] })
 
@@ -104,9 +107,9 @@ def create_account(request):
                 new_user = User.objects.create_user(username=username, password=password)
                 new_user.save()
                 #return render(request, sign_in_page, {'info': sign_up_success})
-                return HttpResponseRedirect(reverse('dashboard:account_manager'))
+                return HttpResponse('账户创建成功')
         else:
-            return render(request, account_manager_page, {'info': warning_null_value})
+            return HttpResponse(warning_null_value)
     else:
         return render(request, account_manager_page)
 
@@ -130,7 +133,7 @@ def create_account(request):
 #                                     end_date=end_date\
 #                                         )
 #         activity.save()
-#     #return HttpResponseRedirect(reverse('alice:index'))
+#     #return HttpResponseRedirect(reverse('dashboard:index'))
 #     #return render(request, centre_page, { 'result_for_ca': [act_name, intro, organizer, create_date, capacity, start_date, end_date]})
 #     return HttpResponse('Activity create success!')
 
@@ -138,6 +141,6 @@ def create_account(request):
 #     act = Activity.objects.filter(activity_ID=activity_ID)
 #     if act.exists():
 #         act.delete()
-#     return HttpResponseRedirect(reverse('alice:index'))
+#     return HttpResponseRedirect(reverse('dashboard:index'))
 
 

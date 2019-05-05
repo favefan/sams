@@ -13,7 +13,35 @@
   </head>
 
   <body>
-
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">学生创建</h4>
+          </div>
+          <div class="modal-body">
+            <div style="width:100%;padding: 10px 20px 10px 20px">
+              <form id="cs_form">
+                  {% csrf_token %}
+                  学号: <input name="stu_id" type="number" min="1" max="999999999999999"> <br>
+                  姓名: <input name="stu_name" type="text"> <br>
+                  性别: <input type="radio" name="sex" value=0 />男
+                  <input type="radio" name="sex" value=1 />女 <br>
+                  班级: <input name="depart" type="number" min="1" max="9999"> <br>
+                  专业: <input name="major" type="text"> <br>
+                  入学年份: <input name="en_year" type="number" min="2000" max="3000"> <br>
+                  修学年限: <input name="school_year" type="number" min="1" max="8"> <br>
+              </form>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button id="cs_sub" type="button" class="btn btn-primary">创建</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -50,23 +78,37 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-8 col-md-offset-2 main"><!-- col-sm-offset-3 -->
-
-          <div style="width:100%;border:3px solid #000000; padding: 10px 20px 10px 20px">
-              <h3>Create Student</h3><p>{{ result_for_cs }}</p>
-              <form id="cs_form">
-                  {% csrf_token %}
-                  Student ID: <input name="stu_id" type="number" min="1" max="999999999999999">
-                  Name: <input name="stu_name" type="text">
-                  Sex: <input type="radio" name="sex" value=0 />男
-                  <input type="radio" name="sex" value=1 />女
-                  Department: <input name="depart" type="number" min="1" max="9999">
-                  Major: <input name="major" type="text">
-                  Enroll year: <input name="en_year" type="number" min="2000" max="3000">
-                  Schooling year: <input name="school_year" type="number" min="1" max="8">
-                  <input id="cs_sub" type="button" value="Create">
-              </form>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+            学生创建
+          </button>
+          <h3 class="sub-header">学生列表</h3>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>学号</th>
+                  <th>姓名</th>
+                  <th>性别</th>
+                  <th>专业班级</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for stu in stus_list %}
+                  <tr>
+                    <td>{{ stu.student_ID }}</td>
+                    <td>{{ stu.name }}</td>
+                    <td>{% if stu.sex is False %}男{% else %}女{% endif %}</td>
+                    <td>{{ stu.enroll_year }}级{{ stu.major }}{{ stu.department }}班</td>
+                    <td>
+                      <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a> 
+                      <a class="btn btn-danger btn-xs" href="#" style="margin-top:0">删除</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
-
         </div>
       </div>
     </div>
@@ -87,14 +129,13 @@
                   contentType : "application/x-www-form-urlencoded",
                   success : function(data) {
                       alert(data)
-                      location.replace('/dashboard/manager/')
+                      location.replace('/dashboard/stu_manager/')
                   }
               })
           })
       }
 
       sub('#cs_sub', '#cs_form', '/dashboard/create_student/')
-      // sub('#ca_sub', '#ca_form', '/alice/create_activity/')
     </script>
   </body>
 </html>

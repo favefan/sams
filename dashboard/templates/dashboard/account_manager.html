@@ -13,6 +13,30 @@
   </head>
 
   <body>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">账户创建</h4>
+          </div>
+          <div class="modal-body">
+            <div style="width:100%;padding: 10px 20px 10px 20px">
+                <form id="cs_form">
+                    {% csrf_token %}
+                    用户名: <input id="uname" name="uname" type="text" required>
+                    密码: <input id="pwd" type="password" name="pwd" required>
+                    <!-- <input id="cs_sub" type="button" value="Create"> -->
+                </form>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button id="cs_sub" type="button" class="btn btn-primary">创建</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
@@ -50,17 +74,37 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-8 col-md-offset-2 main"><!-- col-sm-offset-3 -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+            账户创建
+          </button>
 
-          <div style="width:100%;border:3px solid #000000; padding: 10px 20px 10px 20px">
-              <h3>Create Account</h3><p>{{ result_for_cs }}</p>
-              <form id="cs_form">
-                  {% csrf_token %}
-                  Username: <input name="uname" type="text">
-                  Password: <input type="password" name="pwd">
-                  <input id="cs_sub" type="button" value="Create">
-              </form>
+          <h3 class="sub-header">账号列表</h3>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>用户名</th>
+                  <th>昵称</th>
+                  <th>角色</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for account in accounts_list %}
+                  <tr>
+                    <td>{{ account.id }}</td>
+                    <td>{{ account.first_name }}</td>
+                    <td>{% if account.account %}学生{% else %}活动管理员{% endif %}</td>
+                    <td>
+                      <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a> 
+                      <a class="btn btn-danger btn-xs" href="#" style="margin-top:0">编辑</a><!-- {% url 'alice:delete_activity' act.activity_ID  %} -->
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
-
         </div>
       </div>
     </div>
@@ -70,24 +114,23 @@
     <script type="text/javascript">
       // $('#datetimepicker0').datetimepicker();
       // $('#datetimepicker1').datetimepicker();
-      
       function sub(sub_btn, sub_form, red_url){
           $(sub_btn).click(function() {
               $.ajax({
-                  type : 'post',
-                  dataType : 'html',
-                  url : red_url,
-                  data : $(sub_form).serialize(),
-                  contentType : "application/x-www-form-urlencoded",
-                  success : function(data) {
-                      alert(data)
-                      location.replace('/dashboard/account_manager/')
-                  }
-              })
+                type : 'post',
+                dataType : 'html',
+                url : red_url,
+                data : $(sub_form).serialize(),
+                contentType : "application/x-www-form-urlencoded",
+                success : function(data) {
+                    alert(data)
+                    location.replace('/dashboard/account_manager/')
+                }
+              })          
           })
       }
-
       sub('#cs_sub', '#cs_form', '/dashboard/create_account/')
     </script>
+
   </body>
 </html>
