@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db import models
@@ -86,13 +85,17 @@ def create_student(request):
                                     enroll_year=int(en_year),\
                                         schooling_year=int(school_year)\
                                             )
-            student.save()
             if User.objects.filter(username=stu_id).exists():
-                return HttpResponse('Student create success, but student login account already exists, please contact admin.')
+                student.account_status = '账户冲突'
+                student.save()
+                return HttpResponse('学生信息创建成功, 但学生账户已经存在，无法关联账号，请检查。')
             else:
+                student.save()
                 new_user = User.objects.create_user(username=username, password=password, first_name=stu_name, account=student)
-                new_user.save()
-            return HttpResponse('学生对象和系统登陆账户创建成功.用户名为: ' + username + ' , 密码为: ' + password )
+                new_user.save()  
+                student.account_status = '已创建'
+                student.save()
+            return HttpResponse('学生信息创建成功，学生账户默认用户名为学号，默认密码为学号至少倒数六位。')
             #return render(request, centre_page, {'result_for_cs': 'Student and login account create success.username is: ' + username + ' , and password is: ' + password })
         #return render(request, centre_page, { 'result': [stu_id, stu_name, sex, depart, major, en_year, school_year] })
 
@@ -107,7 +110,7 @@ def create_account(request):
                 new_user = User.objects.create_user(username=username, password=password)
                 new_user.save()
                 #return render(request, sign_in_page, {'info': sign_up_success})
-                return HttpResponse('账户创建成功')
+                return HttpResponse('Account created.')
         else:
             return HttpResponse(warning_null_value)
     else:
@@ -142,5 +145,20 @@ def create_account(request):
 #     if act.exists():
 #         act.delete()
 #     return HttpResponseRedirect(reverse('dashboard:index'))
+
+def delete_student(request, student_ID):
+    stu = Student.objects.filter(student_ID=student_ID)
+    stu_account = User.objects.filter(account=stu[0])
+    if stu.exists():
+        stu.delete()
+        if stu_account.exists():
+            stu_account.delete()
+    return HttpResponseRedirect(reverse('dashboard:stu_manager'))
+
+def delete_account(request, account_ID):
+    account = User.objects.filter(id=account_ID)
+    if account.exists():
+        account.delete()
+    return HttpResponseRedirect(reverse('dashboard:account_manager'))
 
 

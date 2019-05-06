@@ -10,6 +10,7 @@ class Student(models.Model):
     major = models.CharField(max_length=50, default='undef')
     enroll_year = models.PositiveSmallIntegerField(default=0000)
     schooling_year = models.PositiveSmallIntegerField(default=4)
+    account_status = models.CharField(max_length=20, default='未创建', null=False)
     # system_password = models.CharField(max_length=300, default='000000')
 
     def __str__(self):

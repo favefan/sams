@@ -90,6 +90,7 @@
                   <th>姓名</th>
                   <th>性别</th>
                   <th>专业班级</th>
+                  <th>账号状态</th>
                   <th>操作</th>
                 </tr>
               </thead>
@@ -100,9 +101,10 @@
                     <td>{{ stu.name }}</td>
                     <td>{% if stu.sex is False %}男{% else %}女{% endif %}</td>
                     <td>{{ stu.enroll_year }}级{{ stu.major }}{{ stu.department }}班</td>
+                    <td>{{ stu.account_status }}</td>
                     <td>
                       <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a> 
-                      <a class="btn btn-danger btn-xs" href="#" style="margin-top:0">删除</a>
+                      <a class="btn btn-danger btn-xs" href="{% url 'dashboard:delete_student' stu.student_ID  %}" style="margin-top:0">删除</a>
                     </td>
                   </tr>
                 {% endfor %}

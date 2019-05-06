@@ -12,5 +12,6 @@ urlpatterns = [
     path('create_student/', views.create_student),
     path('create_account/', views.create_account),
     # path('create_activity/', views.create_activity),
-    # path('delete_activity?id=<int:activity_ID>', views.delete_activity, name="delete_activity")
+    path('delete_student?id=<int:student_ID>', views.delete_student, name='delete_student'),
+    path('delete_account?id=<int:account_ID>', views.delete_account, name='delete_account'),
 ]

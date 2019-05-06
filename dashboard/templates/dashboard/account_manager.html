@@ -85,7 +85,7 @@
                 <tr>
                   <th>#</th>
                   <th>用户名</th>
-                  <th>昵称</th>
+                  <th>姓名</th>
                   <th>角色</th>
                   <th>操作</th>
                 </tr>
@@ -94,11 +94,12 @@
                 {% for account in accounts_list %}
                   <tr>
                     <td>{{ account.id }}</td>
-                    <td>{{ account.first_name }}</td>
+                    <td>{{ account.username }}</td>
+                    <td>{% if account.first_name %}{{ account.first_name }}{% else %}无{% endif %}</td>
                     <td>{% if account.account %}学生{% else %}活动管理员{% endif %}</td>
                     <td>
                       <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a> 
-                      <a class="btn btn-danger btn-xs" href="#" style="margin-top:0">编辑</a><!-- {% url 'alice:delete_activity' act.activity_ID  %} -->
+                      <a class="btn btn-danger btn-xs" href="{% url 'dashboard:delete_account' account.id  %}" style="margin-top:0">删除</a>
                     </td>
                   </tr>
                 {% endfor %}
