@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db import models
 
-from dashboard.models import User, Student
+from dashboard.models import User, Student, Activity
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -58,6 +58,13 @@ def account_manager(request):
     accounts_list = User.objects.all()
     return render(request, 'dashboard/account_manager.html', { 'accounts_list': accounts_list })
 
+@login_required
+def act_manager(request):
+    organizer = User.objects.get(id=request.session.get('_auth_user_id'))
+    mine_acts_list = Activity.objects.filter(organizer=organizer)
+    return render(request, 'dashboard/act_manager.html', { 'mine_acts_list': mine_acts_list })
+
+@login_required
 def create_student(request):
     if request.POST:
         stu_id = request.POST['stu_id']
@@ -74,7 +81,7 @@ def create_student(request):
         else:
             password = stu_id
         if Student.objects.filter(student_ID=stu_id).exists():
-            return HttpResponse('Student ID exists.')
+            return HttpResponse('输入的学号已存在，请检查.')
         else:
             student = Student(\
                 student_ID=int(stu_id),\
@@ -99,6 +106,7 @@ def create_student(request):
             #return render(request, centre_page, {'result_for_cs': 'Student and login account create success.username is: ' + username + ' , and password is: ' + password })
         #return render(request, centre_page, { 'result': [stu_id, stu_name, sex, depart, major, en_year, school_year] })
 
+@login_required
 def create_account(request):
     if request.method == 'POST':
         if request.POST:
@@ -110,42 +118,47 @@ def create_account(request):
                 new_user = User.objects.create_user(username=username, password=password)
                 new_user.save()
                 #return render(request, sign_in_page, {'info': sign_up_success})
-                return HttpResponse('Account created.')
+                return HttpResponse('账户创建成功.')
         else:
             return HttpResponse(warning_null_value)
     else:
         return render(request, account_manager_page)
 
-# def create_activity(request):
-#     if request.POST:
-#         act_name = request.POST['act_name']
-#         intro = request.POST['intro']
-#         organizer = User.objects.get(id=request.session.get('_auth_user_id')) 
-#         create_date = timezone.now()
-#         capacity = request.POST['capacity']
-#         start_date = request.POST['start_date']
-#         end_date = request.POST['end_date']
-#         # if Activity.objects.filter(name=act_name).exists():
-#         activity = Activity(\
-#             name=act_name,\
-#                 introduction=intro,\
-#                     organizer=organizer,\
-#                         create_date=create_date,\
-#                             capacity=int(capacity),\
-#                                 start_date=start_date,\
-#                                     end_date=end_date\
-#                                         )
-#         activity.save()
-#     #return HttpResponseRedirect(reverse('dashboard:index'))
-#     #return render(request, centre_page, { 'result_for_ca': [act_name, intro, organizer, create_date, capacity, start_date, end_date]})
-#     return HttpResponse('Activity create success!')
+@login_required
+def create_activity(request):
+    if request.POST:
+        act_name = request.POST['act_name']
+        intro = request.POST['intro']
+        organizer = User.objects.get(id=request.session.get('_auth_user_id')) 
+        create_date = timezone.now()
+        capacity = request.POST['capacity']
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+        # if Activity.objects.filter(name=act_name).exists():
+        activity = Activity(\
+            name=act_name,\
+                introduction=intro,\
+                    organizer=organizer,\
+                        create_date=create_date,\
+                            capacity=int(capacity),\
+                                start_date=start_date,\
+                                    end_date=end_date\
+                                        )
+        activity.save()
+        return HttpResponse('活动创建成功。')
+    else:
+        return HttpResponse('输入内容不能为空。')
+    #return HttpResponseRedirect(reverse('dashboard:index'))
+    #return render(request, centre_page, { 'result_for_ca': [act_name, intro, organizer, create_date, capacity, start_date, end_date]})
+    
+@login_required
+def delete_activity(request, activity_ID):
+    act = Activity.objects.filter(activity_ID=activity_ID)
+    if act.exists():
+        act.delete()
+    return HttpResponseRedirect(reverse('dashboard:index'))
 
-# def delete_activity(request, activity_ID):
-#     act = Activity.objects.filter(activity_ID=activity_ID)
-#     if act.exists():
-#         act.delete()
-#     return HttpResponseRedirect(reverse('dashboard:index'))
-
+@login_required
 def delete_student(request, student_ID):
     stu = Student.objects.filter(student_ID=student_ID)
     stu_account = User.objects.filter(account=stu[0])
@@ -155,10 +168,14 @@ def delete_student(request, student_ID):
             stu_account.delete()
     return HttpResponseRedirect(reverse('dashboard:stu_manager'))
 
+@login_required
 def delete_account(request, account_ID):
     account = User.objects.filter(id=account_ID)
     if account.exists():
-        account.delete()
-    return HttpResponseRedirect(reverse('dashboard:account_manager'))
+        if account[0].account:
+            return HttpResponse('此账号关联了学生对象，无法删除，若要删除请删除对应学生对象。')
+        else:
+            account.delete()
+            return HttpResponseRedirect(reverse('dashboard:account_manager'))
 
 
