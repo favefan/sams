@@ -31,12 +31,17 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-left">
-            <li class="{% block ones_act %}{% endblock %}"><a href="#">个人活动</a></li>
+            <li class="{% block ones_act %}{% endblock %}"><a href="/dashboard/index/">个人活动</a></li>
             <li class="{% block open_act %}{% endblock %}"><a href="#">公开活动</a></li>
+            {% if perms.dashboard.add_activity %}
             <li class="{% block act_manager %}{% endblock %}"><a href="/dashboard/act_manager/">活动管理</a></li>
+            {% endif %}
+            {% if user.is_superuser %}
             <li class="{% block stu_manager %}{% endblock %}"><a href="/dashboard/stu_manager/">学生管理</a></li>
             <li class="{% block account_manager %}{% endblock %}"><a href="/dashboard/account_manager/">账号管理</a></li>
+            {% endif %}
             <li class="{% block info_edit %}{% endblock %}"><a href="#">信息修改</a></li>
+            
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="boardbox">

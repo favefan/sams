@@ -1,90 +1,46 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="icon" href="../../favicon.ico"> -->
-    <title>学生活动管理系统 - 活动管理</title>
-    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dashboard/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
-
-  </head>
-
-  <body>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">活动创建</h4>
-          </div>
-          <div class="modal-body">
-            <div style="width:100%;padding: 10px 20px 10px 20px">
-              <form id="cs_form">
-                  {% csrf_token %}
-                  活动名称: <input name="act_name" type="text"> <br>
-                  活动简介: <br>
-                  <textarea name="intro" cols="50" rows="3"></textarea> <br>
-                  活动人数: <input name="capacity" type="number" min="1" max="99999"> <br>
-                  发布者: {% firstof user.first_name user.username %} <br>
-                  开始日期: <input name="start_date" type="text" id="datetimepicker0" data-date-format="yyyy-mm-dd hh:ii"> <br>
-                  结束日期: <input name="end_date" type="text" id="datetimepicker1" data-date-format="yyyy-mm-dd hh:ii"> <br>
-              </form>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-            <button id="cs_sub" type="button" class="btn btn-primary">创建</button>
-          </div>
+{% block title %}活动管理{% endblock %}
+{% block extra_css %}<link href="{% static 'dashboard/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">{% endblock %}
+{% block modal %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">活动创建</h4>
+      </div>
+      <div class="modal-body">
+        <div style="width:100%;padding: 10px 20px 10px 20px">
+          <form id="cs_form">
+              {% csrf_token %}
+              活动名称: <input name="act_name" type="text"> <br>
+              活动简介: <br>
+              <textarea name="intro" cols="50" rows="3"></textarea> <br>
+              活动人数: <input name="capacity" type="number" min="1" max="99999"> <br>
+              发布者: {% firstof user.first_name user.username %} <br>
+              开始日期: <input name="start_date" type="text" id="datetimepicker0" data-date-format="yyyy-mm-dd hh:ii"> <br>
+              结束日期: <input name="end_date" type="text" id="datetimepicker1" data-date-format="yyyy-mm-dd hh:ii"> <br>
+          </form>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button id="cs_sub" type="button" class="btn btn-primary">创建</button>
       </div>
     </div>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <!-- <a class="navbar-brand" href="#">
-            <img alt="Brand" src="./static/images/brand.png">
-          </a> -->
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">学生活动管理系统</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-left">
-            <li><a href="/dashboard/index/">个人活动</a></li>
-            <li><a href="#">公开活动</a></li>
-            <li class="active"><a href="#">活动管理</a></li>
-            <li><a href="/dashboard/stu_manager/">学生管理</a></li>
-            <li><a href="/dashboard/account_manager/">账号管理</a></li>
-            <li><a href="#">信息修改</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li class="boardbox">
-              <a>欢迎你, {% firstof user.first_name user.username %}</a>
-              <a href="/dashboard/logout/">退出登录</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-8 col-md-offset-2 main"><!-- col-sm-offset-3 -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-            创建活动
-          </button>
-          <h3 class="sub-header">我创建的活动</h3>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
+  </div>
+</div>
+{% endblock %}
+{% block act_manager %}active{% endblock %}
+{% block modal_button %}
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+  创建活动
+</button>
+{% endblock %}
+{% block table_title %}我创建的活动{% endblock %}
+{% block table_content %}
+<thead>
                 <tr>
                   <th>#</th>
                   <th>活动名称</th>
@@ -111,15 +67,8 @@
                   </tr>
                 {% endfor %}
               </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script src="{% static 'dashboard/javascript/jquery.min.js' %}"></script>
-    <script src="{% static 'dashboard/javascript/bootstrap.min.js' %}"></script>
-    <script src="{% static 'dashboard/javascript/bootstrap-datetimepicker.min.js' %}"></script>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'dashboard/javascript/bootstrap-datetimepicker.min.js' %}"></script>
     <script type="text/javascript">
       $('#datetimepicker0').datetimepicker();
       $('#datetimepicker1').datetimepicker();
@@ -141,6 +90,5 @@
       }
 
       sub('#cs_sub', '#cs_form', '/dashboard/create_activity/')
-    </script>
-  </body>
-</html>
+    </script>{% endblock %}
+

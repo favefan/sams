@@ -1,143 +1,94 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="icon" href="../../favicon.ico"> -->
-    <title>学生活动管理系统 - 学生管理</title>
-    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
-
-  </head>
-
-  <body>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">学生创建</h4>
-          </div>
-          <div class="modal-body">
-            <div style="width:100%;padding: 10px 20px 10px 20px">
-              <form id="cs_form">
-                  {% csrf_token %}
-                  学号: <input name="stu_id" type="number" min="1" max="999999999999999"> <br>
-                  姓名: <input name="stu_name" type="text"> <br>
-                  性别: <input type="radio" name="sex" value=0 />男
-                  <input type="radio" name="sex" value=1 />女 <br>
-                  班级: <input name="depart" type="number" min="1" max="9999"> <br>
-                  专业: <input name="major" type="text"> <br>
-                  入学年份: <input name="en_year" type="number" min="2000" max="3000"> <br>
-                  修学年限: <input name="school_year" type="number" min="1" max="8"> <br>
-              </form>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-            <button id="cs_sub" type="button" class="btn btn-primary">创建</button>
-          </div>
+{% block title %}学生管理{% endblock %}
+{% block extra_css %}{% endblock %}
+{% block modal %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">学生创建</h4>
+      </div>
+      <div class="modal-body">
+        <div style="width:100%;padding: 10px 20px 10px 20px">
+          <form id="cs_form">
+              {% csrf_token %}
+              学号: <input name="stu_id" type="number" min="1" max="999999999999999"> <br>
+              姓名: <input name="stu_name" type="text"> <br>
+              性别: <input type="radio" name="sex" value=0 />男
+              <input type="radio" name="sex" value=1 />女 <br>
+              班级: <input name="depart" type="number" min="1" max="9999"> <br>
+              专业: <input name="major" type="text"> <br>
+              入学年份: <input name="en_year" type="number" min="2000" max="3000"> <br>
+              修学年限: <input name="school_year" type="number" min="1" max="8"> <br>
+          </form>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button id="cs_sub" type="button" class="btn btn-primary">创建</button>
       </div>
     </div>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <!-- <a class="navbar-brand" href="#">
-            <img alt="Brand" src="./static/images/brand.png">
-          </a> -->
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">学生活动管理系统</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-left">
-            <li><a href="/dashboard/index/">个人活动</a></li>
-            <li><a href="#">公开活动</a></li>
-            <li><a href="/dashboard/act_manager/">活动管理</a></li>
-            <li class="active"><a href="#">学生管理</a></li>
-            <li><a href="/dashboard/account_manager/">账号管理</a></li>
-            <li><a href="#">信息修改</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li class="boardbox">
-              <a>欢迎你, {% firstof user.first_name user.username %}</a>
-              <a href="/dashboard/logout/">退出登录</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-8 col-md-offset-2 main"><!-- col-sm-offset-3 -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-            学生创建
-          </button>
-          <h3 class="sub-header">学生列表</h3>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>学号</th>
-                  <th>姓名</th>
-                  <th>性别</th>
-                  <th>专业班级</th>
-                  <th>账号状态</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for stu in stus_list %}
-                  <tr>
-                    <td>{{ stu.student_ID }}</td>
-                    <td>{{ stu.name }}</td>
-                    <td>{% if stu.sex is False %}男{% else %}女{% endif %}</td>
-                    <td>{{ stu.enroll_year }}级{{ stu.major }}{{ stu.department }}班</td>
-                    <td>{{ stu.account_status }}</td>
-                    <td>
-                      <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a> 
-                      <a class="btn btn-danger btn-xs" href="{% url 'dashboard:delete_student' stu.student_ID  %}" style="margin-top:0">删除</a>
-                    </td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script src="{% static 'dashboard/javascript/jquery.min.js' %}"></script>
-    <script src="{% static 'dashboard/javascript/bootstrap.min.js' %}"></script>
-    <script type="text/javascript">
-      // $('#datetimepicker0').datetimepicker();
-      // $('#datetimepicker1').datetimepicker();
-      
-      function sub(sub_btn, sub_form, red_url){
-          $(sub_btn).click(function() {
-              $.ajax({
-                  type : 'post',
-                  dataType : 'html',
-                  url : red_url,
-                  data : $(sub_form).serialize(),
-                  contentType : "application/x-www-form-urlencoded",
-                  success : function(data) {
-                      alert(data)
-                      location.replace('/dashboard/stu_manager/')
-                  }
-              })
+  </div>
+</div>
+{% endblock %}
+{% block stu_manager %}active{% endblock %}
+{% block modal_button %}
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+  学生创建
+</button>
+{% endblock %}
+{% block table_title %}学生列表{% endblock %}
+{% block table_content %}
+<thead>
+  <tr>
+    <th>学号</th>
+    <th>姓名</th>
+    <th>性别</th>
+    <th>专业班级</th>
+    <th>账号状态</th>
+    <th>操作</th>
+  </tr>
+</thead>
+<tbody>
+  {% for stu in stus_list %}
+    <tr>
+      <td>{{ stu.student_ID }}</td>
+      <td>{{ stu.name }}</td>
+      <td>{% if stu.sex is False %}男{% else %}女{% endif %}</td>
+      <td>{{ stu.enroll_year }}级{{ stu.major }}{{ stu.department }}班</td>
+      <td>{{ stu.account_status }}</td>
+      <td>
+        <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a> 
+        <a class="btn btn-danger btn-xs" href="{% url 'dashboard:delete_student' stu.student_ID  %}" style="margin-top:0">删除</a>
+      </td>
+    </tr>
+  {% endfor %}
+</tbody>
+{% endblock %}
+{% block extra_js %}
+<script type="text/javascript">
+  // $('#datetimepicker0').datetimepicker();
+  // $('#datetimepicker1').datetimepicker();
+  
+  function sub(sub_btn, sub_form, red_url){
+      $(sub_btn).click(function() {
+          $.ajax({
+              type : 'post',
+              dataType : 'html',
+              url : red_url,
+              data : $(sub_form).serialize(),
+              contentType : "application/x-www-form-urlencoded",
+              success : function(data) {
+                  alert(data)
+                  location.replace('/dashboard/stu_manager/')
+              }
           })
-      }
+      })
+  }
 
-      sub('#cs_sub', '#cs_form', '/dashboard/create_student/')
-    </script>
-  </body>
-</html>
+  sub('#cs_sub', '#cs_form', '/dashboard/create_student/')
+</script>
+{% endblock %}
+

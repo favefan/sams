@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.db import models
 
 from dashboard.models import User, Student, Activity
+from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -14,6 +15,16 @@ name_or_pwd_error = 'Username or password error.'
 user_already_exists = 'Username already exists.'
 warning_null_value = 'Username or password not allow be null.'
 sign_up_success = 'Sign up success! Please sign in.'
+
+def get_or_create_group(group_name, codename_list):
+    try:
+        group = Group.objects.get(name=group_name)
+    except Group.DoesNotExist:
+        permissions = Permission.objects.filter(codename__in=codename_list)
+        group = Group.objects.create(name=group_name)
+        group.permissions.set(permissions)
+        group.save()
+    return group
 
 def log_in(request):
     if request.method == 'POST':
@@ -66,6 +77,11 @@ def act_manager(request):
 
 @login_required
 def create_student(request):
+    codename_list = [ 
+        'view_activity', 
+        'add_entrylist', 
+    ]
+    normal_users_group = get_or_create_group('normal_users', codename_list)
     if request.POST:
         stu_id = request.POST['stu_id']
         stu_name = request.POST['stu_name']
@@ -99,7 +115,8 @@ def create_student(request):
             else:
                 student.save()
                 new_user = User.objects.create_user(username=username, password=password, first_name=stu_name, account=student)
-                new_user.save()  
+                new_user.save()
+                normal_users_group.user_set.add(new_user)
                 student.account_status = '已创建'
                 student.save()
             return HttpResponse('学生信息创建成功，学生账户默认用户名为学号，默认密码为学号至少倒数六位。')
@@ -108,6 +125,18 @@ def create_student(request):
 
 @login_required
 def create_account(request):
+    # activity_admins_group = Group.objects.get_or_create(name='activity_admins', permissions=permissions)
+    codename_list = [
+        'add_activity', 
+        'change_activity', 
+        'view_activity', 
+        'add_entrylist', 
+        'change_entrylist', 
+        'delete_entrylist', 
+        'view_entrylist', 
+        'view_student',
+    ]
+    activity_admins_group = get_or_create_group('activity_admins', codename_list)
     if request.method == 'POST':
         if request.POST:
             username = request.POST['uname']
@@ -117,6 +146,7 @@ def create_account(request):
             else:
                 new_user = User.objects.create_user(username=username, password=password)
                 new_user.save()
+                activity_admins_group.user_set.add(new_user)
                 #return render(request, sign_in_page, {'info': sign_up_success})
                 return HttpResponse('账户创建成功.')
         else:
