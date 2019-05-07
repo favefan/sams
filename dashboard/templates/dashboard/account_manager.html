@@ -51,7 +51,7 @@
       <td>{{ account.id }}</td>
       <td>{{ account.username }}</td>
       <td>{% if account.first_name %}{{ account.first_name }}{% else %}无{% endif %}</td>
-      <td>{% if account.account %}学生{% else %}活动管理员{% endif %}</td>
+      <td>{% if account.account %}学生{% elif account.is_superuser %}系统管理员{% else %}活动管理员{% endif %}</td>
       <td>
         <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a> 
         <a class="btn btn-danger btn-xs" href="{% url 'dashboard:delete_account' account.id  %}" style="margin-top:0">删除</a>

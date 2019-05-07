@@ -31,7 +31,9 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-left">
+            {% if user.account %}
             <li class="{% block ones_act %}{% endblock %}"><a href="/dashboard/index/">个人活动</a></li>
+            {% endif %}
             <li class="{% block open_act %}{% endblock %}"><a href="#">公开活动</a></li>
             {% if perms.dashboard.add_activity %}
             <li class="{% block act_manager %}{% endblock %}"><a href="/dashboard/act_manager/">活动管理</a></li>
