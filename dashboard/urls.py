@@ -15,4 +15,5 @@ urlpatterns = [
     path('create_activity/', views.create_activity),
     path('delete_student?id=<int:student_ID>', views.delete_student, name='delete_student'),
     path('delete_account?id=<int:account_ID>', views.delete_account, name='delete_account'),
+    path('edit_account/', views.edit_account),
 ]

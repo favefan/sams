@@ -208,4 +208,27 @@ def delete_account(request, account_ID):
             account.delete()
             return HttpResponseRedirect(reverse('dashboard:account_manager'))
 
+def edit_account(request):
+    account_id = request.POST['id']
+    try:
+        account = User.objects.get(id=account_id)
+    except User.DoesNotExist:
+        return HttpResponse('Ops!Fake id.')
+    else:
+        if 'first_name' in request.POST:
+            first_name = request.POST['first_name']
+            account.first_name = first_name
+            account.save()
+            return HttpResponse('姓名修改成功！')
+        elif 'password' in request.POST:
+            password = request.POST['password']
+            account.set_password(password)
+            account.save()
+            return HttpResponse('密码修改成功！')
+        else:
+            return HttpResponse('Ops!Nothing be submitted.')
+        
+    
 
+    
+    

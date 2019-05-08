@@ -60,11 +60,27 @@
       <td>{{ stu.enroll_year }}级{{ stu.major }}{{ stu.department }}班</td>
       <td>{{ stu.account_status }}</td>
       <td>
-        <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a> 
+        <!-- <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a>  -->
         <a class="btn btn-danger btn-xs" href="{% url 'dashboard:delete_student' stu.student_ID  %}" style="margin-top:0">删除</a>
       </td>
     </tr>
   {% endfor %}
+  <tr>
+      <td>&nbsp</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>&nbsp</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
 </tbody>
 {% endblock %}
 {% block extra_js %}
