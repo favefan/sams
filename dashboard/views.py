@@ -76,6 +76,10 @@ def act_manager(request):
     return render(request, 'dashboard/act_manager.html', { 'mine_acts_list': mine_acts_list })
 
 @login_required
+def info_edit(request):
+    return render(request, 'dashboard/info_edit.html')
+
+@login_required
 def create_student(request):
     codename_list = [ 
         'view_activity', 

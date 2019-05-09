@@ -129,7 +129,7 @@ $('#editModal').on('show.bs.modal', function (event) {
   modal.find('#editText').attr('name', editUrl)
 })
 
-sub('#cc_sub', '#cc_form', '/dashboard/create_account/')
-sub('#ed_sub', '#ed_form', '/dashboard/edit_account/')
+sub('#cc_sub', '#cc_form', '/dashboard/create_account/', '/dashboard/create_account/')
+sub('#ed_sub', '#ed_form', '/dashboard/edit_account/', '/dashboard/edit_account/')
 </script>
 {% endblock %}

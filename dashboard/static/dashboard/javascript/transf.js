@@ -1,6 +1,6 @@
 // $('#datetimepicker0').datetimepicker();
   // $('#datetimepicker1').datetimepicker();
-function sub(sub_btn, sub_form, red_url){
+function sub(sub_btn, sub_form, red_url, rep_url){
     $(sub_btn).click(function() {
         $.ajax({
           type : 'post',
@@ -10,7 +10,7 @@ function sub(sub_btn, sub_form, red_url){
           contentType : "application/x-www-form-urlencoded",
           success : function(data) {
               alert(data)
-              location.replace('/dashboard/account_manager/')
+              location.replace(rep_url)
           }
         })          
     })

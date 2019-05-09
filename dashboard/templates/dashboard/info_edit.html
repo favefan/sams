@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}信息修改{% endblock %}
+{% block modal %}
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">项目修改</h4>
+      </div>
+      <div class="modal-body">
+        <div style="width:100%;padding: 10px 20px 10px 20px">
+            <form id="ed_form">
+                {% csrf_token %}
+                <input type="hidden" id="editID" name="id" value="">
+                <p>修改项</p><input id="editText" name="editText" type="text" > <br>
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button id="ed_sub" type="button" class="btn btn-primary">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block info_edit %}active{% endblock %}
+{% block table_title %}账号信息修改{% endblock %}
+{% block extra_content %}
+<div>
+    <ul>
+        <li>
+            你的用户名：{{ user.username }}
+        </li>
+        <li>
+            你的姓名：{% firstof user.first_name '无' %}
+            {% if user.account %}{% else %}
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editModal" data-editItem="姓名" data-editUrl="first_name" data-editID="{{ user.id }}">
+              修改
+            </button>
+            {% endif %}
+        </li>
+        <li>
+            账号关联：{% if user.account %}学生（{{ user.account }}）{% else %}无{% endif %}
+        </li>
+        <li>
+            密码&nbsp;
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editModal" data-editItem="密码" data-editUrl="password" data-editID="{{ user.id }}">
+              修改
+            </button>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'dashboard/javascript/transf.js' %}"></script>
+<script>
+$('#editModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget)
+  var editItem = button.data('edititem')
+  var editUrl = button.data('editurl')
+  var editID = button.data('editid')
+  // var editUser = button.data('edituser')
+  var modal = $(this)
+  modal.find('.modal-title').text('修改' + editItem)
+  modal.find('.modal-body p').text('新' + editItem)
+  modal.find('#editID').val(editID)
+  modal.find('#editText').attr('name', editUrl)
+})
+sub('#ed_sub', '#ed_form', '/dashboard/edit_account/', '/dashboard/info_edit/')
+</script>
+{% endblock %}
