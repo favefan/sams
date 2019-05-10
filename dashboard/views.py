@@ -5,7 +5,7 @@ from django.db import models
 from dashboard.models import User, Student, Activity
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.utils import timezone
 
 login_page = 'dashboard/login.html'
@@ -55,21 +55,29 @@ def index(request):
     # for entry in entry_list:
     #     part_acts_list.append(entry.activity)
     # acts_list = Activity.objects.all()
+    current_user = request.user
+    if current_user.account is None:
+        index_url = 'dashboard/act_manager.html'
+    else:
+        index_url = 'dashboard/index.html'
     acts_list = []
     part_acts_list = []
-    return render(request, 'dashboard/index.html', { 'acts_list': acts_list, 'part_acts_list': part_acts_list })
+    return render(request, index_url, { 'acts_list': acts_list, 'part_acts_list': part_acts_list })
 
 @login_required
+@permission_required('dashboard.add_student', raise_exception=True)
 def stu_manager(request):
     stus_list = Student.objects.all()
     return render(request, 'dashboard/stu_manager.html', { 'stus_list': stus_list })
 
 @login_required
+@permission_required('dashboard.add_user', raise_exception=True)
 def account_manager(request):
     accounts_list = User.objects.all()
     return render(request, 'dashboard/account_manager.html', { 'accounts_list': accounts_list })
 
 @login_required
+@permission_required('dashboard.add_activity', raise_exception=True)
 def act_manager(request):
     organizer = User.objects.get(id=request.session.get('_auth_user_id'))
     mine_acts_list = Activity.objects.filter(organizer=organizer)
