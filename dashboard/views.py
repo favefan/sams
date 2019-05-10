@@ -88,6 +88,7 @@ def info_edit(request):
     return render(request, 'dashboard/info_edit.html')
 
 @login_required
+@permission_required('dashboard.add_student', raise_exception=True)
 def create_student(request):
     codename_list = [ 
         'view_activity', 
@@ -136,6 +137,7 @@ def create_student(request):
         #return render(request, centre_page, { 'result': [stu_id, stu_name, sex, depart, major, en_year, school_year] })
 
 @login_required
+@permission_required('dashboard.add_user', raise_exception=True)
 def create_account(request):
     # activity_admins_group = Group.objects.get_or_create(name='activity_admins', permissions=permissions)
     codename_list = [
@@ -167,6 +169,7 @@ def create_account(request):
         return render(request, account_manager_page)
 
 @login_required
+@permission_required('dashboard.add_activity', raise_exception=True)
 def create_activity(request):
     if request.POST:
         act_name = request.POST['act_name']
@@ -194,6 +197,7 @@ def create_activity(request):
     #return render(request, centre_page, { 'result_for_ca': [act_name, intro, organizer, create_date, capacity, start_date, end_date]})
     
 @login_required
+@permission_required('dashboard.delete_activity', raise_exception=True)
 def delete_activity(request, activity_ID):
     act = Activity.objects.filter(activity_ID=activity_ID)
     if act.exists():
@@ -201,6 +205,7 @@ def delete_activity(request, activity_ID):
     return HttpResponseRedirect(reverse('dashboard:index'))
 
 @login_required
+@permission_required('dashboard.delete_student', raise_exception=True)
 def delete_student(request, student_ID):
     stu = Student.objects.filter(student_ID=student_ID)
     stu_account = User.objects.filter(account=stu[0])
@@ -211,6 +216,7 @@ def delete_student(request, student_ID):
     return HttpResponseRedirect(reverse('dashboard:stu_manager'))
 
 @login_required
+@permission_required('dashboard.delete_user', raise_exception=True)
 def delete_account(request, account_ID):
     account = User.objects.filter(id=account_ID)
     if account.exists():
@@ -220,6 +226,7 @@ def delete_account(request, account_ID):
             account.delete()
             return HttpResponseRedirect(reverse('dashboard:account_manager'))
 
+@login_required
 def edit_account(request):
     account_id = request.POST['id']
     try:
