@@ -7,7 +7,7 @@ Python 3.7 64bit
 
 Django 2.2
 
-MySQL 10.3
+MariaDB 10.3
 
 ## 系统功能设置:
 普通用户： 
