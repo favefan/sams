@@ -69,7 +69,11 @@
   </tr>
 </thead>
 <tbody>
-  {% for account in accounts_list %}
+  
+
+
+  {% if accounts_list %}
+    {% for account in accounts_list %}
     <tr>
       <td>{{ account.id }}</td>
       <td>{{ account.username }}</td>
@@ -93,7 +97,12 @@
       
     </tr>
   {% endfor %}
-    <tr>
+  {% else %}
+  <tr>
+      <td>无数据</td>
+      </tr>
+  {% endif %}
+    <!-- <tr>
       <td>&nbsp</td>
       <td></td>
       <td></td>
@@ -106,7 +115,7 @@
       <td></td>
       <td></td>
       <td></td>
-    </tr>
+    </tr> -->
 </tbody>
 {% endblock %}
 {% block extra_js %}

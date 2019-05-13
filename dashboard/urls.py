@@ -17,4 +17,6 @@ urlpatterns = [
     path('delete_account?id=<int:account_ID>', views.delete_account, name='delete_account'),
     path('edit_account/', views.edit_account),
     path('info_edit/', views.info_edit, name="info_edit"),
+    path('open_acts/', views.open_acts, name="open_acts"),
+    path('enroll?act_id=<int:activity_ID>', views.enroll, name="enroll"),
 ]

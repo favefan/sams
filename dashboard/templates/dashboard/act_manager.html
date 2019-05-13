@@ -14,10 +14,10 @@
         <div style="width:100%;padding: 10px 20px 10px 20px">
           <form id="cs_form">
               {% csrf_token %}
-              活动名称: <input name="act_name" type="text"> <br>
+              活动名称: <input name="act_name" type="text" class="form-control"> <br>
               活动简介: <br>
-              <textarea name="intro" cols="50" rows="3"></textarea> <br>
-              活动人数: <input name="capacity" type="number" min="1" max="99999"> <br>
+              <textarea name="intro" cols="50" rows="3" class="form-control"></textarea> <br>
+              活动人数: <input name="capacity" type="number" min="1" max="99999" > <br>
               发布者: {% firstof user.first_name user.username %} <br>
               开始日期: <input name="start_date" type="text" id="datetimepicker0" data-date-format="yyyy-mm-dd hh:ii"> <br>
               结束日期: <input name="end_date" type="text" id="datetimepicker1" data-date-format="yyyy-mm-dd hh:ii"> <br>
@@ -52,6 +52,7 @@
                 </tr>
               </thead>
               <tbody>
+                  {% if mine_acts_list %}
                 {% for act in mine_acts_list %}
                   <tr>
                     <td>{{ act.activity_ID }}</td>
@@ -66,6 +67,11 @@
                     </td>
                   </tr>
                 {% endfor %}
+                {% else %}
+                <tr>
+                  <td>无数据</td>
+                  </tr>
+            {% endif %}
               </tbody>
 {% endblock %}
 {% block extra_js %}<script src="{% static 'dashboard/javascript/bootstrap-datetimepicker.min.js' %}"></script>

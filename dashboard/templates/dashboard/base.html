@@ -15,12 +15,12 @@
 
   <body>
     {% block modal %}{% endblock %}
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
-          <!-- <a class="navbar-brand" href="#">
-            <img alt="Brand" src="./static/images/brand.png">
-          </a> -->
+          <a class="navbar-brand" href="#">
+              <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
+          </a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
@@ -34,7 +34,7 @@
             {% if user.account %}
             <li class="{% block ones_act %}{% endblock %}"><a href="/dashboard/index/">个人活动</a></li>
             {% endif %}
-            <li class="{% block open_act %}{% endblock %}"><a href="#">公开活动</a></li>
+            <li class="{% block open_acts %}{% endblock %}"><a href="/dashboard/open_acts/">公开活动</a></li>
             {% if perms.dashboard.add_activity %}
             <li class="{% block act_manager %}{% endblock %}"><a href="/dashboard/act_manager/">活动管理</a></li>
             {% endif %}
@@ -47,7 +47,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="boardbox">
-              <a>欢迎你, {% firstof user.first_name user.username %}</a>
+              <a href="/dashboard/info_edit/">欢迎你, {% firstof user.first_name user.username %}</a>
               <a href="/dashboard/logout/">退出登录</a>
             </li>
           </ul>
@@ -59,13 +59,17 @@
       <div class="row">
         <div class="col-md-8 col-md-offset-2 main"><!-- col-sm-offset-3 -->
           {% block modal_button %}{% endblock %}
-          <h3 class="sub-header">{% block table_title %}{% endblock %}</h3>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              {% block table_content %}{% endblock %}
-            </table>
+          <h3>{% block table_title %}{% endblock %}</h3>
+          <div class="panel panel-default">
+            
+              <table class="table table-striped">
+                {% block table_content %}{% endblock %}
+                
+              </table>
           </div>
           {% block extra_content %}{% endblock %}
+          
+
         </div>
       </div>
     </div>

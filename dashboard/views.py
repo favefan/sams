@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db import models
 
-from dashboard.models import User, Student, Activity
+from dashboard.models import User, Student, Activity, Entrylist
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
@@ -11,9 +11,9 @@ from django.utils import timezone
 login_page = 'dashboard/login.html'
 account_manager_page = 'dashboard/account_manager.html'
 index_page = 'dashboard/index.html'
-name_or_pwd_error = 'Username or password error.'
-user_already_exists = 'Username already exists.'
-warning_null_value = 'Username or password not allow be null.'
+name_or_pwd_error = '用户名或密码不正确'
+user_already_exists = '用户名已存在'
+warning_null_value = '用户名或密码不能为空'
 sign_up_success = 'Sign up success! Please sign in.'
 
 def get_or_create_group(group_name, codename_list):
@@ -25,6 +25,17 @@ def get_or_create_group(group_name, codename_list):
         group.permissions.set(permissions)
         group.save()
     return group
+
+def auto_red_html(message, red_url):
+    return  message + \
+            '<head>\
+                <meta http-equiv="refresh" content="5;URL=' + red_url + '">\
+            </head>\
+            <body>\
+                <p>5秒后自动跳转...<br>或点击\
+                    <a href="' + red_url + '">此处</a>\
+                直接跳转。</p>\
+            </body>'
 
 def log_in(request):
     if request.method == 'POST':
@@ -86,6 +97,11 @@ def act_manager(request):
 @login_required
 def info_edit(request):
     return render(request, 'dashboard/info_edit.html')
+
+@login_required
+def open_acts(request):
+    open_acts_list = Activity.objects.all()
+    return render(request, 'dashboard/open_acts.html', { 'open_acts_list': open_acts_list })
 
 @login_required
 @permission_required('dashboard.add_student', raise_exception=True)
@@ -246,6 +262,20 @@ def edit_account(request):
             return HttpResponse('密码修改成功！')
         else:
             return HttpResponse('Ops!Nothing be submitted.')
+
+@login_required
+def enroll(request, activity_ID):
+    current_user = request.user
+    activity = Activity.objects.get(activity_ID=activity_ID)
+    student = current_user.account
+    entry_check = Entrylist.objects.filter(student=student, activity=activity)
+    if entry_check.exists():
+        return HttpResponse(auto_red_html('你已经报名了，请不要重复报名', '/dashboard/open_acts/'))
+    else:
+        enroll_activity = Entrylist(student=student, activity=activity, entry_date=timezone.now())
+        enroll_activity.save()
+        return HttpResponseRedirect(reverse('dashboard:open_acts'))
+    
         
     
 

@@ -47,12 +47,15 @@
     <th>姓名</th>
     <th>性别</th>
     <th>专业班级</th>
-    <th>账号状态</th>
+    <th>关联账号</th>
     <th>操作</th>
   </tr>
 </thead>
 <tbody>
-  {% for stu in stus_list %}
+  
+
+  {% if stus_list %}
+    {% for stu in stus_list %}
     <tr>
       <td>{{ stu.student_ID }}</td>
       <td>{{ stu.name }}</td>
@@ -65,7 +68,12 @@
       </td>
     </tr>
   {% endfor %}
+  {% else %}
   <tr>
+      <td>无数据</td>
+      </tr>
+  {% endif %}
+  <!-- <tr>
       <td>&nbsp</td>
       <td></td>
       <td></td>
@@ -80,7 +88,7 @@
       <td></td>
       <td></td>
       <td></td>
-    </tr>
+    </tr> -->
 </tbody>
 {% endblock %}
 {% block extra_js %}

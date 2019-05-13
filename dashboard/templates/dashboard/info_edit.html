@@ -30,11 +30,11 @@
 {% block table_title %}账号信息修改{% endblock %}
 {% block extra_content %}
 <div>
-    <ul>
-        <li>
+    <ul class="list-group">
+        <li class="list-group-item">
             你的用户名：{{ user.username }}
         </li>
-        <li>
+        <li class="list-group-item">
             你的姓名：{% firstof user.first_name '无' %}
             {% if user.account %}{% else %}
             <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editModal" data-editItem="姓名" data-editUrl="first_name" data-editID="{{ user.id }}">
@@ -42,10 +42,10 @@
             </button>
             {% endif %}
         </li>
-        <li>
+        <li class="list-group-item">
             账号关联：{% if user.account %}学生（{{ user.account }}）{% else %}无{% endif %}
         </li>
-        <li>
+        <li class="list-group-item">
             密码&nbsp;
             <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editModal" data-editItem="密码" data-editUrl="password" data-editID="{{ user.id }}">
               修改
@@ -53,6 +53,7 @@
         </li>
     </ul>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}

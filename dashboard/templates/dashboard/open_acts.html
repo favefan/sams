@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}公开活动{% endblock %}
+{% block modal %}
+<div class="modal fade" id="checkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div style="width:100%;padding: 10px 20px 10px 20px">
+              <p>确认报名？</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <a type="button" class="btn btn-primary" href="#">确定</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block open_acts %}active{% endblock %}
+{% block table_title %}公开的活动{% endblock %}
+{% block table_content %}
+<thead>
+  <tr>
+    <th>#</th>
+    <th>活动名称</th>
+    <th>活动人数</th>
+    <th>开始日期</th>
+    <th>结束日期</th>
+    <th>操作</th>
+  </tr>
+</thead>
+<tbody>
+  {% if open_acts_list %}
+    {% for act in open_acts_list %}
+      <tr>
+        <td>{{ act.activity_ID }}</td>
+        <td>{{ act.name }}</td>
+        <td>{{ act.capacity }}</td>
+        <td>{{ act.start_date }}</td>
+        <td>{{ act.end_date }}</td>
+        <td>
+          {% if user.account %}
+          <button class="btn btn-primary btn-xs" 
+          style="margin-top:0" 
+          data-toggle="modal" 
+          data-target="#checkModal" 
+          data-enroll_url="{% url 'dashboard:enroll' act.activity_ID %}" 
+          data-act_name="{{ act.name }}">报名</button>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  {% else %}
+  <tr>
+      <td>无数据</td>
+      </tr>
+  {% endif %}
+</tbody>
+{% endblock %}  
+{% block extra_js %}
+<script>
+    $('#checkModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget) 
+      var act_name = button.data('act_name')
+      var enroll_url = button.data('enroll_url')
+      var modal = $(this)
+      modal.find('.modal-body p').text('确认报名活动：' + act_name + ' 吗？')
+      modal.find('.modal-footer a').attr('href', enroll_url)
+    })
+    </script>
+{% endblock %}
