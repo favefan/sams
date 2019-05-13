@@ -16,6 +16,7 @@ user_already_exists = '用户名已存在'
 warning_null_value = '用户名或密码不能为空'
 sign_up_success = 'Sign up success! Please sign in.'
 
+###Instrumental function
 def get_or_create_group(group_name, codename_list):
     try:
         group = Group.objects.get(name=group_name)
@@ -36,6 +37,7 @@ def auto_red_html(message, red_url):
                     <a href="' + red_url + '">此处</a>\
                 直接跳转。</p>\
             </body>'
+###
 
 def log_in(request):
     if request.method == 'POST':
@@ -60,20 +62,17 @@ def log_out(request):
 
 @login_required
 def index(request):
-    # part_acts_list = []
-    # current_user = Student.objects.get(user=request.user)
-    # entry_list = Entrylist.objects.filter(student=current_user)
-    # for entry in entry_list:
-    #     part_acts_list.append(entry.activity)
-    # acts_list = Activity.objects.all()
+    part_acts_list = []
     current_user = request.user
     if current_user.account is None:
-        index_url = 'dashboard/act_manager.html'
+        return HttpResponseRedirect(reverse('dashboard:open_acts'))
     else:
-        index_url = 'dashboard/index.html'
-    acts_list = []
-    part_acts_list = []
-    return render(request, index_url, { 'acts_list': acts_list, 'part_acts_list': part_acts_list })
+        student = current_user.account
+        mine_entry_list = Entrylist.objects.filter(student=student)
+        if mine_entry_list.exists():
+            for entry in mine_entry_list:
+                part_acts_list.append(entry.activity)
+        return render(request, 'dashboard/index.html', {'part_acts_list': part_acts_list })
 
 @login_required
 @permission_required('dashboard.add_student', raise_exception=True)

@@ -6,19 +6,31 @@
 <thead>
   <tr>
     <th>#</th>
-    <th>Header</th>
-    <th>Header</th>
-    <th>Header</th>
-    <th>Header</th>
+    <th>活动名称</th>
+    <th>活动人数</th>
+    <th>活动开始日期</th>
+    <th>活动结束日期</th>
+    <th></th>
   </tr>
 </thead>
 <tbody>
+  {% if part_acts_list %}
+    {% for act in part_acts_list %}
+      <tr>
+        <td>{{ act.activity_ID }}</td>
+        <td>{{ act.name }}</td>
+        <td>{{ act.capacity }}</td>
+        <td>{{ act.start_date }}</td>
+        <td>{{ act.end_date }}</td>
+        <td>
+          
+        </td>
+      </tr>
+    {% endfor %}
+  {% else %}
   <tr>
-    <td>1,001</td>
-    <td>Lorem</td>
-    <td>ipsum</td>
-    <td>dolor</td>
-    <td>sit</td>
-  </tr>
+      <td>无数据</td>
+      </tr>
+  {% endif %}
 </tbody>
-{% endblock %}  
+{% endblock %}
