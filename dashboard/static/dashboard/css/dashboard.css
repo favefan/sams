@@ -5,8 +5,19 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
     padding-top: 50px;
+    overflow: hidden;
   }
   
+  canvas {
+    /* height: 100%; */
+    background-color: #eee;
+    z-index: -1;
+    display: block;
+    margin: 0 auto;
+    pointer-events: none;
+    position: absolute;
+
+  }
   
   /*
    * Global add-ons

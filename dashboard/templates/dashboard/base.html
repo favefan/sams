@@ -14,6 +14,7 @@
   </head>
 
   <body>
+    
     {% block modal %}{% endblock %}
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
@@ -54,28 +55,29 @@
         </div>
       </div>
     </nav>
-
+    <canvas id="canvas"></canvas>
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-8 col-md-offset-2 main"><!-- col-sm-offset-3 -->
+          
           {% block modal_button %}{% endblock %}
-          <h3>{% block table_title %}{% endblock %}</h3>
+          {% block table_title %}{% endblock %}
           <div class="panel panel-default">
-            
+            {% block font_content %}{% endblock %}
               <table class="table table-striped">
                 {% block table_content %}{% endblock %}
                 
               </table>
           </div>
           {% block extra_content %}{% endblock %}
-          
-
         </div>
       </div>
     </div>
+    
 
     <script src="{% static 'dashboard/javascript/jquery.min.js' %}"></script>
     <script src="{% static 'dashboard/javascript/bootstrap.min.js' %}"></script>
+    <script src="{% static 'dashboard/javascript/canvas.js' %}"></script>
     {% block extra_js %}{% endblock %}
   </body>
 </html>

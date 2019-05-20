@@ -38,7 +38,7 @@
   创建活动
 </button>
 {% endblock %}
-{% block table_title %}我创建的活动{% endblock %}
+{% block table_title %}<h3>我创建的活动</h3>{% endblock %}
 {% block table_content %}
 <thead>
                 <tr>
@@ -61,7 +61,9 @@
                     <td>{{ act.capacity }}</td>
                     <td>{{ act.start_date }}</td>
                     <td>{{ act.end_date }}</td>
-                    <td></td>
+                    <td>
+                      <a class="btn btn-default btn-xs" href="{% url 'dashboard:act_info' act.activity_ID  %}" style="margin-top:0">管理</a>
+                    </td>
                     <td>
                       
                     </td>

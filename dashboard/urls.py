@@ -19,4 +19,6 @@ urlpatterns = [
     path('info_edit/', views.info_edit, name="info_edit"),
     path('open_acts/', views.open_acts, name="open_acts"),
     path('enroll?act_id=<int:activity_ID>', views.enroll, name="enroll"),
+    path('act_info?act_id=<int:activity_ID>', views.act_info, name="act_info"),
+    path('edit_act?act_id=<int:activity_ID>', views.edit_act, name="edit_act"),
 ]

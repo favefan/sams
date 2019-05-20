@@ -9,6 +9,8 @@ Django 2.2
 
 MariaDB 10.3
 
+Ubuntu 16.04 LTS 64bit(By WSL from Windows10 64bit)
+
 ## 系统功能设置:
 普通用户： 
 1. 个人活动（查看参与的活动数量√，对应加分项目的总得分，已报名的活动列表以及活动分别获得的奖项和加分） 

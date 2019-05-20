@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}活动管理{% endblock %}
+{% block extra_css %}<link href="{% static 'dashboard/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">{% endblock %}
+{% block modal %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">活动修改</h4>
+    </div>
+    <div class="modal-body">
+        <div style="width:100%;padding: 10px 20px 10px 20px">
+        <form id="cs_form">
+            {% csrf_token %}
+            活动名称: <input name="act_name" type="text" value="{{ act.name }}"> <br>
+            活动简介: <br>
+            <textarea name="intro" cols="50" rows="3">{{ act.introduction }}</textarea> <br>
+            活动人数: <input name="capacity" type="number" min="1" max="99999" value="{{ act.capacity }}"> <br>
+            开始日期: <input name="start_date" type="text" id="datetimepicker0" data-date-format="yyyy-mm-dd hh:ii" value="{{ act.start_date|date:'Y-m-d H:i:s' }}"> <br>
+            结束日期: <input name="end_date" type="text" id="datetimepicker1" data-date-format="yyyy-mm-dd hh:ii" value="{{ act.end_date|date:'Y-m-d H:i:s' }}"> <br>
+        </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button id="cs_sub" type="button" class="btn btn-primary">确定</button>
+    </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+{% block act_manager %}active{% endblock %}
+{% block modal_button %}
+{% endblock %}
+{% block table_title %}
+<ol class="breadcrumb">
+    <li><a href="/dashboard/act_manager/">我创建的活动</a></li>
+    <li><a >活动详情</a></li>
+    <li><a class="active">{{ act.name }}</a></li>
+</ol>
+{% endblock %}
+{% block font_content %}
+<div>
+    <ul class="list-group">
+        <li class="list-group-item">
+            活动名称：{{ act.name }}
+        </li>
+        <li class="list-group-item">
+            活动简介：{% firstof act.introduction '无' %}
+        </li>
+        <li class="list-group-item">
+            发布者：{% firstof act.organizer.first_name act.organizer.username %}
+        </li>
+        <li class="list-group-item">
+            已报名人数/活动容量：{{ count }}/{{ act.capacity }}
+        </li>
+        <li class="list-group-item">
+            开始日期：{{ act.start_date }}
+        </li>
+        <li class="list-group-item">
+            结束日期：{{ act.end_date }}
+        </li>
+        <li class="list-group-item">
+            操作：
+            <a class="btn btn-default btn-xs" href="" data-toggle="modal" data-target="#myModal">修改信息</a>
+            <a class="btn btn-primary btn-xs" href="" >添加报名</a>
+            <a class="btn btn-success btn-xs" href="" >分享活动</a>
+            <a class="btn btn-danger btn-xs" href="" >删除活动</a>
+        </li>
+    </ul>
+</div>
+<h4>&nbsp;&nbsp; 活动人员名单</h4>
+{% endblock %}
+{% block table_content %}
+<thead>
+<tr>
+    <th>#</th>
+    <th>姓名</th>
+    <th>学号</th>
+    <th>班级</th>
+    <th>操作</th>
+</tr>
+</thead>
+<tbody>
+{% if entry_list %}
+{% with i=1 %}
+{% for entry in entry_list %}
+    <tr>
+    <td>{{ i }}</td>
+    <td>{{ act.name }}</td>
+    <td>{{ act.create_date }}</td>
+    <td>{{ act.capacity }}</td>
+    <td>
+    </td>
+    </tr>
+    {{ i|add:"1" }}
+{% endfor %}
+{% endwith %}
+{% else %}
+<tr>
+    <td>无数据</td>
+    </tr>
+{% endif %}
+</tbody>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'dashboard/javascript/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'dashboard/javascript/transf.js' %}"></script>
+    <script type="text/javascript">
+      $('#datetimepicker0').datetimepicker();
+      $('#datetimepicker1').datetimepicker();
+      sub('#cs_sub', '#cs_form', "{% url 'dashboard:edit_act' act.activity_ID  %}", "{% url 'dashboard:act_info' act.activity_ID  %}")
+    </script>{% endblock %}
+

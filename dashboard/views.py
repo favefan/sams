@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db import models
@@ -188,6 +189,7 @@ def create_account(request):
 def create_activity(request):
     if request.POST:
         act_name = request.POST['act_name']
+        print(act_name)
         intro = request.POST['intro']
         organizer = User.objects.get(id=request.session.get('_auth_user_id')) 
         create_date = timezone.now()
@@ -274,7 +276,35 @@ def enroll(request, activity_ID):
         enroll_activity = Entrylist(student=student, activity=activity, entry_date=timezone.now())
         enroll_activity.save()
         return HttpResponseRedirect(reverse('dashboard:open_acts'))
-    
+
+@login_required
+@permission_required('dashboard.change_activity', raise_exception=True)
+def act_info(request, activity_ID):
+    activity = Activity.objects.get(activity_ID=activity_ID)
+    entry_list = Entrylist.objects.filter(activity=activity)
+    return render(request, 'dashboard/act_info.html', { 'act': activity, 'llist': entry_list, 'count': entry_list.count() })
+
+@login_required
+@permission_required('dashboard.change_activity', raise_exception=True)
+def edit_act(request, activity_ID):
+    activity = Activity.objects.get(activity_ID=activity_ID)
+    name = request.POST['act_name']
+    intro = request.POST['intro']
+    capacity = request.POST['capacity']
+    start_date = request.POST['start_date']
+    end_date = request.POST['end_date']
+    if name != activity.name:
+        activity.name = name
+    if intro != activity.introduction:
+        activity.introduction = intro
+    if capacity != activity.capacity:
+        activity.capacity = capacity
+    if start_date != activity.start_date:
+        activity.start_date = start_date
+    if end_date != activity.end_date:
+        activity.end_date = end_date
+    activity.save()
+    return HttpResponse('修改成功!')    
         
     
 
