@@ -111,32 +111,31 @@
 {% block table_content %}
 <thead>
     <tr>
-        <th>#</th>
         <th>姓名</th>
         <th>学号</th>
         <th>班级</th>
+        <th>获得奖项</th>
+        <th>所加分数</th>
         <th>操作</th>
     </tr>
 </thead>
 <tbody>
     {% if entry_list %}
-    {% with i=1 %}
-    {% for entry in entry_list %}
-    <tr>
-        <td>{{ i }}</td>
-        <td>{{ act.name }}</td>
-        <td>{{ act.create_date }}</td>
-        <td>{{ act.capacity }}</td>
-        <td>
-        </td>
-    </tr>
-    {{ i|add:"1" }}
-    {% endfor %}
-    {% endwith %}
+        {% for entry in entry_list %}
+        <tr>
+            <td>{{ entry.student.name }}</td>
+            <td>{{ entry.student.student_ID }}</td>
+            <td>{{ entry.student.enroll_year }}级{{ entry.student.major }}{{ entry.student.department }}班</td>
+            <td></td>
+            <td></td>
+            <td>
+            </td>
+        </tr>
+        {% endfor %}
     {% else %}
-    <tr>
-        <td>无数据</td>
-    </tr>
+        <tr>
+            <td>无数据</td>
+        </tr>
     {% endif %}
 </tbody>
 {% endblock %}
@@ -158,16 +157,48 @@
             success : function(data) {
                 var dataList = JSON.parse(data)
                 // alert(JSON.parse(data)[0].fields.name)
-                
+                var flag = 1
                 var tableBody = '<table class="table table-striped"><thead><tr><th>姓名</th><th>学号</th><th>班级</th><th>操作</th></tr></thead><tbody>'
                 for ( var i of  dataList) {
                     var oneField = i.fields
-                    tableBody = tableBody + "<tr><td>" + oneField.name + "</td><td>" + i.pk + "</td><td>" + oneField.enroll_year + "级" + oneField.major + oneField.department + "班" + "</td><td></td></tr>"
+                    var secBtn = "<a type=\"button\" class=\"btn btn-primary btn-xs\" id=\"enrollButton\" data-actId=\"{{ act.activity_ID }}\" data-stuId=\"" + i.pk + "\" data-num=\"" + flag +  "\" data-backdrop=\"'static'\" onclick=\"enroll(this)\">添加</a>"
+                    tableBody = tableBody + "<tr><td>" + oneField.name + "</td><td>" + i.pk + "</td><td>" + oneField.enroll_year + "级" + oneField.major + oneField.department + "班" + "</td><td>" + secBtn + "</td></tr>"
+                    flag++
                 }
                 tableBody = tableBody + "</tbody></table>"
                 document.getElementById("result_list").innerHTML = tableBody
                 // location.replace(rep_url)
             }
         })          
+    })
+    function enroll(as){
+        var a = $(as)
+        var stu_id = a.data("stuid")
+        var act_id = a.data("actid")
+        var url = "manual_enroll?act_id=" + act_id + "&stu_id=" + stu_id
+        $.get(encodeURIComponent(url), function(result){
+            var result_list = document.getElementById("result_list")
+            if (result=="200"){
+                a.html = "已报名"
+                a.attr('disabled', 'disabled')
+                var sucMsg = document.createElement("div")
+                sucMsg.setAttribute('class', 'alert alert-success alert-dismissible')
+                sucMsg.setAttribute('role', 'alert')
+                sucMsg.innerHTML = '添加成功。'
+                result_list.after(sucMsg)
+            } else if(result=="002") {
+                // var btn = document.getElementById("enrollButton")
+                a.html = "已报名"
+                a.attr('disabled', 'disabled')
+                var warnMsg = document.createElement("div")
+                warnMsg.setAttribute('class', 'alert alert-warning alert-dismissible')
+                warnMsg.setAttribute('role', 'alert')
+                warnMsg.innerHTML = '对象在此之前已经被添加。'
+                result_list.after(warnMsg)
+            }
+        });
+    }
+    $('#addModal').on('hidden.bs.modal', function (e) {
+        window.location.reload()
     })
 </script>{% endblock %}

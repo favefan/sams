@@ -284,7 +284,7 @@ def enroll(request, activity_ID):
 def act_info(request, activity_ID):
     activity = Activity.objects.get(activity_ID=activity_ID)
     entry_list = Entrylist.objects.filter(activity=activity)
-    return render(request, 'dashboard/act_info.html', { 'act': activity, 'llist': entry_list, 'count': entry_list.count() })
+    return render(request, 'dashboard/act_info.html', { 'act': activity, 'entry_list': entry_list, 'count': entry_list.count() })
 
 @login_required
 @permission_required('dashboard.change_activity', raise_exception=True)
@@ -323,13 +323,12 @@ def search(request):
     
 @login_required
 def manual_enroll(request, activity_ID, student_ID):
-    current_user = request.user
     activity = Activity.objects.get(activity_ID=activity_ID)
-    student = current_user.account
+    student = Student.objects.get(student_ID=student_ID)
     entry_check = Entrylist.objects.filter(student=student, activity=activity)
     if entry_check.exists():
-        return HttpResponse(auto_red_html('你已经报名了，请不要重复报名', '/dashboard/open_acts/'))
+        return HttpResponse('002')
     else:
         enroll_activity = Entrylist(student=student, activity=activity, entry_date=timezone.now())
         enroll_activity.save()
-        return HttpResponseRedirect(reverse('dashboard:open_acts'))
+        return HttpResponse('200')
