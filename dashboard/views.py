@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404, reverse
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.db import models
-
+from django.db.models import Q
 from dashboard.models import User, Student, Activity, Entrylist
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils import timezone
+from django.core import serializers
+import json
 
 login_page = 'dashboard/login.html'
 account_manager_page = 'dashboard/account_manager.html'
@@ -307,6 +309,27 @@ def edit_act(request, activity_ID):
     return HttpResponse('修改成功!')    
         
     
-
+@login_required
+def search(request):
+    search_content = request.POST['search_content']
+    result = Student.objects.filter(
+        Q(student_ID__icontains=search_content)|
+        Q(name__icontains=search_content))
+    if result.exists():
+        data = serializers.serialize('json', result)
+        return HttpResponse(data, content_type="application/json;charset=utf-8")
+    else:
+        return HttpResponse('0')
     
-    
+@login_required
+def manual_enroll(request, activity_ID, student_ID):
+    current_user = request.user
+    activity = Activity.objects.get(activity_ID=activity_ID)
+    student = current_user.account
+    entry_check = Entrylist.objects.filter(student=student, activity=activity)
+    if entry_check.exists():
+        return HttpResponse(auto_red_html('你已经报名了，请不要重复报名', '/dashboard/open_acts/'))
+    else:
+        enroll_activity = Entrylist(student=student, activity=activity, entry_date=timezone.now())
+        enroll_activity.save()
+        return HttpResponseRedirect(reverse('dashboard:open_acts'))

@@ -1,83 +1,87 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="icon" href="../../favicon.ico"> -->
-    <title>学生管理系统 - {% block title %}欢迎{% endblock %}</title>
-    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
-    {% block extra_css %}{% endblock %}
 
-  </head>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="icon" href="../../favicon.ico"> -->
+  <title>学生管理系统 - {% block title %}欢迎{% endblock %}</title>
+  <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
+  {% block extra_css %}{% endblock %}
 
-  <body>
-    
-    {% block modal %}{% endblock %}
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">
-              <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
-          </a>
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">学生活动管理系统</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-left">
-            {% if user.account %}
-            <li class="{% block ones_act %}{% endblock %}"><a href="/dashboard/index/">个人活动</a></li>
-            {% endif %}
-            <li class="{% block open_acts %}{% endblock %}"><a href="/dashboard/open_acts/">公开活动</a></li>
-            {% if perms.dashboard.add_activity %}
-            <li class="{% block act_manager %}{% endblock %}"><a href="/dashboard/act_manager/">活动管理</a></li>
-            {% endif %}
-            {% if user.is_superuser %}
-            <li class="{% block stu_manager %}{% endblock %}"><a href="/dashboard/stu_manager/">学生管理</a></li>
-            <li class="{% block account_manager %}{% endblock %}"><a href="/dashboard/account_manager/">账号管理</a></li>
-            {% endif %}
-            <li class="{% block info_edit %}{% endblock %}"><a href="/dashboard/info_edit/">信息修改</a></li>
-            
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li class="boardbox">
-              <a href="/dashboard/info_edit/">欢迎你, {% firstof user.first_name user.username %}</a>
-              <a href="/dashboard/logout/">退出登录</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <canvas id="canvas"></canvas>
+</head>
+
+<body>
+
+  {% block modal %}{% endblock %}
+  <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-8 col-md-offset-2 main"><!-- col-sm-offset-3 -->
-          
-          {% block modal_button %}{% endblock %}
-          {% block table_title %}{% endblock %}
-          <div class="panel panel-default">
-            {% block font_content %}{% endblock %}
-              <table class="table table-striped">
-                {% block table_content %}{% endblock %}
-                
-              </table>
-          </div>
-          {% block extra_content %}{% endblock %}
-        </div>
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">学生活动管理系统</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-left">
+          {% if user.account %}
+          <li class="{% block ones_act %}{% endblock %}"><a href="/dashboard/index/">个人活动</a></li>
+          {% endif %}
+          <li class="{% block open_acts %}{% endblock %}"><a href="/dashboard/open_acts/">公开活动</a></li>
+          {% if perms.dashboard.add_activity %}
+          <li class="{% block act_manager %}{% endblock %}"><a href="/dashboard/act_manager/">活动管理</a></li>
+          {% endif %}
+          {% if user.is_superuser %}
+          <li class="{% block stu_manager %}{% endblock %}"><a href="/dashboard/stu_manager/">学生管理</a></li>
+          <li class="{% block account_manager %}{% endblock %}"><a href="/dashboard/account_manager/">账号管理</a></li>
+          {% endif %}
+          <li class="{% block info_edit %}{% endblock %}"><a href="/dashboard/info_edit/">信息修改</a></li>
+
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="boardbox">
+            <a href="/dashboard/info_edit/">欢迎你, {% firstof user.first_name user.username %}</a>
+            <a href="/dashboard/logout/">退出登录</a>
+          </li>
+        </ul>
       </div>
     </div>
-    
+  </nav>
+  <canvas id="canvas"></canvas>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2 main">
+        <!-- col-sm-offset-3 -->
 
-    <script src="{% static 'dashboard/javascript/jquery.min.js' %}"></script>
-    <script src="{% static 'dashboard/javascript/bootstrap.min.js' %}"></script>
-    <script src="{% static 'dashboard/javascript/canvas.js' %}"></script>
-    {% block extra_js %}{% endblock %}
-  </body>
+        {% block modal_button %}{% endblock %}
+        {% block table_title %}{% endblock %}
+        <div class="panel panel-default">
+          {% block font_content %}{% endblock %}
+          <table class="table table-striped">
+            {% block table_content %}{% endblock %}
+
+          </table>
+        </div>
+        {% block extra_content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+
+
+  <script src="{% static 'dashboard/javascript/jquery.min.js' %}"></script>
+  <script src="{% static 'dashboard/javascript/bootstrap.min.js' %}"></script>
+  <script src="{% static 'dashboard/javascript/canvas.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+
 </html>

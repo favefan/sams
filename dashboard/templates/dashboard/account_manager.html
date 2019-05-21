@@ -4,104 +4,110 @@
 {% block extra_css %}{% endblock %}
 {% block modal %}
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">账户创建</h4>
-      </div>
-      <div class="modal-body">
-        <div style="width:100%;padding: 10px 20px 10px 20px">
-            <form id="cc_form">
-                {% csrf_token %}
-                用户名: <input id="uname" name="uname" type="text" required>
-                密码: <input id="pwd" type="password" name="pwd" required>
-                <!-- <input id="cs_sub" type="button" value="Create"> -->
-            </form>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">账户创建</h4>
+            </div>
+            <div class="modal-body">
+                <div style="width:100%;padding: 10px 20px 10px 20px">
+                    <form id="cc_form">
+                        {% csrf_token %}
+                        用户名: <input id="uname" name="uname" type="text" required>
+                        密码: <input id="pwd" type="password" name="pwd" required>
+                        <!-- <input id="cs_sub" type="button" value="Create"> -->
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="cc_sub" type="button" class="btn btn-primary">创建</button>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        <button id="cc_sub" type="button" class="btn btn-primary">创建</button>
-      </div>
     </div>
-  </div>
 </div>
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">项目修改</h4>
-      </div>
-      <div class="modal-body">
-        <div style="width:100%;padding: 10px 20px 10px 20px">
-            <form id="ed_form">
-                {% csrf_token %}
-                <input type="hidden" id="editID" name="id" value="">
-                <p>修改项</p><input id="editText" name="editText" type="text" > <br>
-            </form>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">项目修改</h4>
+            </div>
+            <div class="modal-body">
+                <div style="width:100%;padding: 10px 20px 10px 20px">
+                    <form id="ed_form">
+                        {% csrf_token %}
+                        <input type="hidden" id="editID" name="id" value="">
+                        <p>修改项</p><input id="editText" name="editText" type="text"> <br>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="ed_sub" type="button" class="btn btn-primary">提交</button>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        <button id="ed_sub" type="button" class="btn btn-primary">提交</button>
-      </div>
     </div>
-  </div>
 </div>
 {% endblock %}
 {% block account_manager %}active{% endblock %}
 {% block modal_button %}
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-  账户创建
+    账户创建
 </button>
 {% endblock %}
 {% block table_title %}<h3>账号列表</h3>{% endblock %}
 {% block table_content %}
 <thead>
-  <tr>
-    <th>#</th>
-    <th>用户名</th>
-    <th>姓名</th>
-    <th>角色</th>
-    <th>操作</th>
-  </tr>
+    <tr>
+        <th>#</th>
+        <th>用户名</th>
+        <th>姓名</th>
+        <th>角色</th>
+        <th>操作</th>
+    </tr>
 </thead>
 <tbody>
-  
 
 
-  {% if accounts_list %}
+
+    {% if accounts_list %}
     {% for account in accounts_list %}
     <tr>
-      <td>{{ account.id }}</td>
-      <td>{{ account.username }}</td>
-      <td>{% if account.first_name %}{{ account.first_name }}{% else %}无{% endif %}</td>
-      <td>{% if account.account %}学生{% elif account.is_superuser %}系统管理员{% else %}活动管理员{% endif %}</td>
-      {% if account.is_superuser %} <td></td> {% else %}
-      <td>
-        <!-- <a class="btn btn-default btn-xs" href="#" style="margin-top:0"  data-toggle="modal" data-target="#editModal">修改</a>  -->
-        <div class="btn-group">
-          <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            修改 <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
-            <li><a href="#" data-toggle="modal" data-target="#editModal" data-editUser="{{ account.username }}"  data-editItem="姓名" data-editUrl="first_name" data-editID="{{ account.id }}">修改姓名</a></li>
-            <li><a href="#" data-toggle="modal" data-target="#editModal" data-editUser="{{ account.username }}" data-editItem="密码" data-editUrl="password" data-editID="{{ account.id }}">修改密码</a></li>
-          </ul>
-        </div>
-        <a class="btn btn-danger btn-xs" href="{% url 'dashboard:delete_account' account.id  %}" style="margin-top:0">删除</a>
-      </td>
-      {% endif %}
-      
+        <td>{{ account.id }}</td>
+        <td>{{ account.username }}</td>
+        <td>{% if account.first_name %}{{ account.first_name }}{% else %}无{% endif %}</td>
+        <td>{% if account.account %}学生{% elif account.is_superuser %}系统管理员{% else %}活动管理员{% endif %}</td>
+        {% if account.is_superuser %} <td></td> {% else %}
+        <td>
+            <!-- <a class="btn btn-default btn-xs" href="#" style="margin-top:0"  data-toggle="modal" data-target="#editModal">修改</a>  -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    修改 <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-target="#editModal" data-editUser="{{ account.username }}"
+                            data-editItem="姓名" data-editUrl="first_name" data-editID="{{ account.id }}">修改姓名</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#editModal" data-editUser="{{ account.username }}"
+                            data-editItem="密码" data-editUrl="password" data-editID="{{ account.id }}">修改密码</a></li>
+                </ul>
+            </div>
+            <a class="btn btn-danger btn-xs" href="{% url 'dashboard:delete_account' account.id  %}"
+                style="margin-top:0">删除</a>
+        </td>
+        {% endif %}
+
     </tr>
-  {% endfor %}
-  {% else %}
-  <tr>
-      <td>无数据</td>
-      </tr>
-  {% endif %}
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td>无数据</td>
+    </tr>
+    {% endif %}
     <!-- <tr>
       <td>&nbsp</td>
       <td></td>
@@ -121,24 +127,24 @@
 {% block extra_js %}
 <script src="{% static 'dashboard/javascript/transf.js' %}"></script>
 <script>
-$('#editModal').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget) // Button that triggered the modal
-  var editItem = button.data('edititem')
-  var editUrl = button.data('editurl')
-  var editID = button.data('editid')
-  var editUser = button.data('edituser')
-  // Extract info from data-* attributes
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-  console.log(button)
-  var modal = $(this)
-  modal.find('.modal-title').text('修改' + editUser + '的' + editItem)
-  modal.find('.modal-body p').text('新' + editItem)
-  modal.find('#editID').val(editID)
-  modal.find('#editText').attr('name', editUrl)
-})
+    $('#editModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var editItem = button.data('edititem')
+        var editUrl = button.data('editurl')
+        var editID = button.data('editid')
+        var editUser = button.data('edituser')
+        // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        console.log(button)
+        var modal = $(this)
+        modal.find('.modal-title').text('修改' + editUser + '的' + editItem)
+        modal.find('.modal-body p').text('新' + editItem)
+        modal.find('#editID').val(editID)
+        modal.find('#editText').attr('name', editUrl)
+    })
 
-sub('#cc_sub', '#cc_form', '/dashboard/create_account/', '/dashboard/create_account/')
-sub('#ed_sub', '#ed_form', '/dashboard/edit_account/', '/dashboard/edit_account/')
+    sub('#cc_sub', '#cc_form', '/dashboard/create_account/', '/dashboard/create_account/')
+    sub('#ed_sub', '#ed_form', '/dashboard/edit_account/', '/dashboard/edit_account/')
 </script>
 {% endblock %}
