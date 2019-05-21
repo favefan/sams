@@ -23,4 +23,5 @@ urlpatterns = [
     path('act_info?act_id=<int:activity_ID>', views.act_info, name="act_info"),
     path('edit_act?act_id=<int:activity_ID>', views.edit_act, name="edit_act"),
     path('search/', views.search, name="search"),
+    path('award_give/', views.award_give, name="award_give"),
 ]

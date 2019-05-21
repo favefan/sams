@@ -332,3 +332,22 @@ def manual_enroll(request, activity_ID, student_ID):
         enroll_activity = Entrylist(student=student, activity=activity, entry_date=timezone.now())
         enroll_activity.save()
         return HttpResponse('200')
+
+@login_required
+def award_give(request):
+    act_id = request.POST['act_id']
+    stu_id = request.POST['stu_id']
+    award = request.POST['award']
+    score_kind = request.POST['score_kind']
+    score = request.POST['score']
+    activity = Activity.objects.get(activity_ID=act_id)
+    student = Student.objects.get(student_ID=stu_id)
+    entry = Entrylist.objects.get(student=student, activity=activity)
+    if entry:
+        entry.awards = award
+        entry.score_kind = score_kind
+        entry.score = score
+        entry.save()
+        return HttpResponse('奖项设置成功！')
+    else:
+        return HttpResponse('奖项设置失败，请联系管理员！')

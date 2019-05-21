@@ -47,5 +47,5 @@ class Entrylist(models.Model):
     entry_date = models.DateTimeField(default=timezone.now)
     awards = models.CharField(max_length=200, null=True, blank=True)
     score_kind = models.CharField(max_length=100, null=True, blank=True)
-    score = models.PositiveSmallIntegerField(default=0, null=True, blank=True)
+    score = models.FloatField(default=0, null=True, blank=True)
 

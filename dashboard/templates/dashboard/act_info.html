@@ -54,13 +54,44 @@
                         </form><!-- /input-group -->
                     </div><!-- /.col-lg-6 -->
                     <div id="result_list">
-                        
+
                     </div>
                 </div><!-- /.row -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <!-- <button id="en_sub" type="button" class="btn btn-primary">确定</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="prizeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">奖项管理</h4>
+            </div>
+            <div class="modal-body">
+                <div style="width:100%;padding: 10px 20px 10px 20px">
+                    <form id="as_form">
+                        {% csrf_token %}
+                        <input type="hidden" name="act_id" value="{{ act.activity_ID }}">
+                        活动名称: <p id="act_name"></p>
+                        学生姓名: <p id="stu_name"></p>
+                        学号: <p id="stu_idno"></p>
+                        <input type="hidden" id="stu_id" name="stu_id" value="0">
+                        班级: <p id="department"></p>
+                        所获奖项: <input id="award" name="award" type="text" > <br>
+                        加分类别：<input id="score_kind" name="score_kind" type="text" > <br>
+                        得分：<input id="score" name="score" type="number" > <br>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="as_sub" type="button" class="btn btn-primary">提交</button>
             </div>
         </div>
     </div>
@@ -121,21 +152,33 @@
 </thead>
 <tbody>
     {% if entry_list %}
-        {% for entry in entry_list %}
-        <tr>
-            <td>{{ entry.student.name }}</td>
-            <td>{{ entry.student.student_ID }}</td>
-            <td>{{ entry.student.enroll_year }}级{{ entry.student.major }}{{ entry.student.department }}班</td>
-            <td></td>
-            <td></td>
-            <td>
-            </td>
-        </tr>
-        {% endfor %}
+    {% for entry in entry_list %}
+    <tr>
+        <td>{{ entry.student.name }}</td>
+        <td>{{ entry.student.student_ID }}</td>
+        <td>{{ entry.student.enroll_year }}级{{ entry.student.major }}{{ entry.student.department }}班</td>
+        <td>{{ entry.awards }}</td>
+        <td>{{ entry.score_kind }}:{{ entry.score }}</td>
+        <td>
+            <a class="btn btn-primary btn-xs" type="button"
+            data-act_name="{{ act.name }}" 
+            data-stu_name="{{ entry.student.name }}" 
+            data-stu_id="{{ entry.student.student_ID }}"
+            data-stu_department="{{ entry.student.enroll_year }}级{{ entry.student.major }}{{ entry.student.department }}班"
+            data-award="{{ entry.awards }}"
+            data-score_kind="{{ entry.score_kind }}"
+            data-score="{{ entry.score }}"
+            data-toggle="modal" 
+            data-target="#prizeModal"
+            >获奖管理</a>
+            <a class="btn btn-danger btn-xs" href="#">删除</a>
+        </td>
+    </tr>
+    {% endfor %}
     {% else %}
-        <tr>
-            <td>无数据</td>
-        </tr>
+    <tr>
+        <td>无数据</td>
+    </tr>
     {% endif %}
 </tbody>
 {% endblock %}
@@ -147,38 +190,47 @@
     $('#datetimepicker1').datetimepicker();
     sub('#ea_sub', '#ea_form', "{% url 'dashboard:edit_act' act.activity_ID  %}",
         "{% url 'dashboard:act_info' act.activity_ID  %}")
-    $('#search_btn').click(function() {
+    sub('#as_sub', '#as_form', "{% url 'dashboard:award_give' %}",
+        "{% url 'dashboard:act_info' act.activity_ID  %}")
+    $('#search_btn').click(function () {
         $.ajax({
-            type : 'post',
-            dataType : 'html',
-            url : '/dashboard/search/',
-            data : $('#search').serialize(),
-            contentType : "application/x-www-form-urlencoded",
-            success : function(data) {
+            type: 'post',
+            dataType: 'html',
+            url: '/dashboard/search/',
+            data: $('#search').serialize(),
+            contentType: "application/x-www-form-urlencoded",
+            success: function (data) {
                 var dataList = JSON.parse(data)
                 // alert(JSON.parse(data)[0].fields.name)
                 var flag = 1
-                var tableBody = '<table class="table table-striped"><thead><tr><th>姓名</th><th>学号</th><th>班级</th><th>操作</th></tr></thead><tbody>'
-                for ( var i of  dataList) {
+                var tableBody =
+                    '<table class="table table-striped"><thead><tr><th>姓名</th><th>学号</th><th>班级</th><th>操作</th></tr></thead><tbody>'
+                for (var i of dataList) {
                     var oneField = i.fields
-                    var secBtn = "<a type=\"button\" class=\"btn btn-primary btn-xs\" id=\"enrollButton\" data-actId=\"{{ act.activity_ID }}\" data-stuId=\"" + i.pk + "\" data-num=\"" + flag +  "\" data-backdrop=\"'static'\" onclick=\"enroll(this)\">添加</a>"
-                    tableBody = tableBody + "<tr><td>" + oneField.name + "</td><td>" + i.pk + "</td><td>" + oneField.enroll_year + "级" + oneField.major + oneField.department + "班" + "</td><td>" + secBtn + "</td></tr>"
+                    var secBtn =
+                        "<a type=\"button\" class=\"btn btn-primary btn-xs\" id=\"enrollButton\" data-actId=\"{{ act.activity_ID }}\" data-stuId=\"" +
+                        i.pk + "\" data-num=\"" + flag +
+                        "\" data-backdrop=\"'static'\" onclick=\"enroll(this)\">添加</a>"
+                    tableBody = tableBody + "<tr><td>" + oneField.name + "</td><td>" + i.pk +
+                        "</td><td>" + oneField.enroll_year + "级" + oneField.major + oneField
+                        .department + "班" + "</td><td>" + secBtn + "</td></tr>"
                     flag++
                 }
                 tableBody = tableBody + "</tbody></table>"
                 document.getElementById("result_list").innerHTML = tableBody
                 // location.replace(rep_url)
             }
-        })          
+        })
     })
-    function enroll(as){
+
+    function enroll(as) {
         var a = $(as)
         var stu_id = a.data("stuid")
         var act_id = a.data("actid")
         var url = "manual_enroll?act_id=" + act_id + "&stu_id=" + stu_id
-        $.get(encodeURIComponent(url), function(result){
+        $.get(encodeURIComponent(url), function (result) {
             var result_list = document.getElementById("result_list")
-            if (result=="200"){
+            if (result == "200") {
                 a.html = "已报名"
                 a.attr('disabled', 'disabled')
                 var sucMsg = document.createElement("div")
@@ -186,7 +238,7 @@
                 sucMsg.setAttribute('role', 'alert')
                 sucMsg.innerHTML = '添加成功。'
                 result_list.after(sucMsg)
-            } else if(result=="002") {
+            } else if (result == "002") {
                 // var btn = document.getElementById("enrollButton")
                 a.html = "已报名"
                 a.attr('disabled', 'disabled')
@@ -201,4 +253,23 @@
     $('#addModal').on('hidden.bs.modal', function (e) {
         window.location.reload()
     })
+    $('#prizeModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget)
+        var act_name = button.data('act_name')
+        var stu_name = button.data('stu_name')
+        var stu_id = button.data('stu_id')
+        var stu_depart = button.data('stu_department')
+        var award = button.data('award')
+        var score_kind = button.data('score_kind')
+		var score = button.data('score')
+		var modal = $(this)
+        modal.find('#act_name').text(act_name)
+        modal.find('#stu_name').text(stu_name)
+        modal.find('#stu_idno').text(stu_id)
+        modal.find('#stu_id').val(stu_id)
+        modal.find('#department').text(stu_depart)
+        modal.find('#award').val(award)
+        modal.find('#score_kind').val(score_kind)
+        modal.find('#score').val(score)
+	})
 </script>{% endblock %}
