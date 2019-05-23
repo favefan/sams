@@ -123,16 +123,16 @@
             已报名人数/活动容量：{{ count }}/{{ act.capacity }}
         </li>
         <li class="list-group-item">
-            开始日期：{{ act.start_date }}
+            开始日期：{{ act.start_date|date:'Y-m-d H:i:s' }}
         </li>
         <li class="list-group-item">
-            结束日期：{{ act.end_date }}
+            结束日期：{{ act.end_date|date:'Y-m-d H:i:s' }}
         </li>
         <li class="list-group-item">
             操作：
             <a class="btn btn-default btn-xs" data-toggle="modal" data-target="#editModal">修改信息</a>
             <a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addModal">添加报名</a>
-            <a class="btn btn-success btn-xs" href="">分享活动</a>
+            <a class="btn btn-success btn-xs" href="{% url 'dashboard:shared' act.activity_ID %}">分享活动</a>
             <a class="btn btn-danger btn-xs" href="">删除活动</a>
         </li>
     </ul>

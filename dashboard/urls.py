@@ -24,4 +24,6 @@ urlpatterns = [
     path('edit_act?act_id=<int:activity_ID>', views.edit_act, name="edit_act"),
     path('search/', views.search, name="search"),
     path('award_give/', views.award_give, name="award_give"),
+    path('shared?act_id=<int:activity_ID>', views.shared, name="shared"),
+    path('any_login/', views.any_login, name="any_login"),
 ]

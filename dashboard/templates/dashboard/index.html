@@ -1,30 +1,51 @@
 {% extends "base.html" %}
 {% block title %}个人中心{% endblock %}
 {% block ones_act %}active{% endblock %}
-{% block table_title %}<h3>我参与的活动</h3>{% endblock %}
+{% block font_content %}
+<div>
+    <ul class="list-group">
+        <li class="list-group-item">
+            我的名字：{{ user.account.name }}
+        </li>
+        <li class="list-group-item">
+            我的学号：{{ user.account.student_ID }}
+        </li>
+        <li class="list-group-item">
+            我的班级：{{ user.account.enroll_year }}级{{ user.account.major }}{{ user.account.department }}班
+        </li>
+        <li class="list-group-item">
+            参与的活动数量：{{ act_count }}
+        </li>
+        <li class="list-group-item">
+            得分合计：第二课堂加分：{{ scmark }}, 思想品德加分：{{ thmark }}
+        </li>
+    </ul>
+</div>
+<h4>&nbsp;&nbsp; 我参与的活动</h4>
+{% endblock %}
 {% block table_content %}
 <thead>
     <tr>
-        <th>#</th>
+        <th>活动序号</th>
         <th>活动名称</th>
         <th>活动人数</th>
-        <th>活动开始日期</th>
-        <th>活动结束日期</th>
-        <th></th>
+        <th>开始日期</th>
+        <th>结束日期</th>
+        <th>获得奖项</th>
+        <th>获得分数</th>
     </tr>
 </thead>
 <tbody>
-    {% if part_acts_list %}
-    {% for act in part_acts_list %}
+    {% if mine_entry_list %}
+    {% for entry in mine_entry_list %}
     <tr>
-        <td>{{ act.activity_ID }}</td>
-        <td>{{ act.name }}</td>
-        <td>{{ act.capacity }}</td>
-        <td>{{ act.start_date }}</td>
-        <td>{{ act.end_date }}</td>
-        <td>
-
-        </td>
+        <td>{{ entry.activity.activity_ID }}</td>
+        <td>{{ entry.activity.name }}</td>
+        <td>{{ entry.activity.capacity }}</td>
+        <td>{{ entry.activity.start_date|date:'Y-m-d H:i:s' }}</td>
+        <td>{{ entry.activity.end_date|date:'Y-m-d H:i:s' }}</td>
+        <td>{{ entry.awards }}</td>
+        <td>{{ entry.score_kind }}:{{ entry.score }}</td>
     </tr>
     {% endfor %}
     {% else %}

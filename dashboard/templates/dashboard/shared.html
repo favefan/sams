@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
+    <title>欢迎报名“{{ act.name }}”活动</title>
+    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'dashboard/css/sticky-footer.css' %}" rel="stylesheet">
+  </head>
+
+  <body>
+        <div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">账号登陆</h4>
+                        </div>
+                        <div class="modal-body">
+                                <form id="lo_form">
+                                    {% csrf_token %}
+                                    用户名：<input type="text" id="uname" name="uname" > <br>
+                                    密 &nbsp; 码： <input type="password" id="pwd" name="pwd"  >
+                                </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button id="lo_sub" type="button" class="btn btn-primary">确认</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <div class="container">
+      <div class="page-header">
+        <h1>欢迎报名“{{ act.name }}”活动</h1>
+      </div>
+      <div class="">
+        <ul class="list-group">
+            <li class="list-group-item">
+                活动名称：{{ act.name }}
+            </li>
+            <li class="list-group-item">
+                活动简介：{% firstof act.introduction '无' %}
+            </li>
+            <li class="list-group-item">
+                发布者：{% firstof act.organizer.first_name act.organizer.username %}
+            </li>
+            <li class="list-group-item">
+                已报名人数/活动容量：{{ count }}/{{ act.capacity }}
+            </li>
+            <li class="list-group-item">
+                开始日期：{{ act.start_date|date:'Y-m-d H:i:s' }}
+            </li>
+            <li class="list-group-item">
+                结束日期：{{ act.end_date|date:'Y-m-d H:i:s' }}
+            </li>
+            <li class="list-group-item">
+                {% if user.is_authenticated %}
+                {% else %}
+                    <a class="btn btn-primary" data-toggle="modal" data-target="#enrollModal">登陆后报名</a>
+                {% endif %}
+                {% if user.account %}
+                    <a class="btn btn-primary" href="{% url 'dashboard:enroll' act.activity_ID %}">报名</a>
+                {% endif %}
+                <a class="btn btn-default" href="/dashboard/index/">进入系统</a>
+            </li>
+        </ul>
+    </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted">第二课堂信息管理系统@by 望风帆. Open source project on <a href="https://gitee.com/favefan/SAMS_bg">gitee.</a> </p>
+      </div>
+    </footer>
+    <script src="{% static 'dashboard/javascript/jquery.min.js' %}"></script>
+    <script src="{% static 'dashboard/javascript/bootstrap.min.js' %}"></script>\
+    <script src="{% static 'dashboard/javascript/transf.js' %}"></script>
+    <script>
+        sub("#lo_sub", "#lo_form", "/dashboard/any_login/", window.location.href)
+    </script>
+  </body>
+</html>

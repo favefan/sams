@@ -41,8 +41,8 @@
 		<td>{{ act.activity_ID }}</td>
 		<td>{{ act.name }}</td>
 		<td>{{ act.capacity }}</td>
-		<td>{{ act.start_date }}</td>
-		<td>{{ act.end_date }}</td>
+		<td>{{ act.start_date|date:'Y-m-d H:i:s' }}</td>
+		<td>{{ act.end_date|date:'Y-m-d H:i:s' }}</td>
 		<td>
 			{% if user.account %}
 			<button class="btn btn-primary btn-xs" style="margin-top:0" data-toggle="modal" data-target="#checkModal"

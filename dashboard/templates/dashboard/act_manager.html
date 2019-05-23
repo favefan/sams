@@ -63,8 +63,8 @@
         <td>{{ act.name }}</td>
         <td>{{ act.create_date }}</td>
         <td>{{ act.capacity }}</td>
-        <td>{{ act.start_date }}</td>
-        <td>{{ act.end_date }}</td>
+        <td>{{ act.start_date|date:'Y-m-d H:i:s' }}</td>
+        <td>{{ act.end_date|date:'Y-m-d H:i:s' }}</td>
         <td>
             <a class="btn btn-default btn-xs" href="{% url 'dashboard:act_info' act.activity_ID  %}"
                 style="margin-top:0">管理</a>

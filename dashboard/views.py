@@ -65,17 +65,22 @@ def log_out(request):
 
 @login_required
 def index(request):
-    part_acts_list = []
     current_user = request.user
     if current_user.account is None:
         return HttpResponseRedirect(reverse('dashboard:open_acts'))
     else:
+        scmark = 0
+        thmark = 0
         student = current_user.account
         mine_entry_list = Entrylist.objects.filter(student=student)
+        my_act_count = mine_entry_list.count()
+        for one in mine_entry_list:
+            if '第二课堂' in one.score_kind:
+                scmark = scmark + one.score
+            if '思想品德' in one.score_kind:
+                thmark = thmark + one.score
         if mine_entry_list.exists():
-            for entry in mine_entry_list:
-                part_acts_list.append(entry.activity)
-        return render(request, 'dashboard/index.html', {'part_acts_list': part_acts_list })
+            return render(request, 'dashboard/index.html', {'mine_entry_list': mine_entry_list, 'act_count': my_act_count, 'scmark': scmark, 'thmark': thmark })
 
 @login_required
 @permission_required('dashboard.add_student', raise_exception=True)
@@ -351,3 +356,25 @@ def award_give(request):
         return HttpResponse('奖项设置成功！')
     else:
         return HttpResponse('奖项设置失败，请联系管理员！')
+
+def shared(request, activity_ID):
+    activity = Activity.objects.get(activity_ID=activity_ID)
+    count = Entrylist.objects.filter(activity=activity).count()
+    return render(request, 'dashboard/shared.html', { 'act': activity, 'count': count })
+
+
+def any_login(request):
+    if request.method == 'POST':
+        if request.POST:
+            username = request.POST['uname']
+            password = request.POST['pwd']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return HttpResponse('登陆成功！')
+            else:
+                return HttpResponse(name_or_pwd_error)
+        else:
+            return HttpResponse(warning_null_value)
+    else:
+        return HttpResponse('Ops!')
