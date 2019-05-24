@@ -441,4 +441,16 @@ def get_report(request, activity_ID):
     return HttpResponse('/static/dashboard/upload/' + activity.name + '.xlsx')
 
 def graph_data(request):
-    return render(request, 'dashboard/graph_data.html')
+    activity_name_list = []
+    activity_entry_count_list = []
+    student_name_list = []
+    student_entry_count_list = []
+    activitys = Activity.objects.order_by('-entry_count')[:3]
+    students = Student.objects.order_by('-entry_count')[:3]
+    for act in activitys:
+        activity_name_list.append(act.name)
+        activity_entry_count_list.append(act.entry_count)
+    for stu in students:
+        student_name_list.append(stu.name)
+        student_entry_count_list.append(stu.entry_count)
+    return render(request, 'dashboard/graph_data.html', { 'activity_name_list': activity_name_list, 'activity_entry_count_list': activity_entry_count_list, 'student_name_list':student_name_list, 'student_entry_count_list':student_entry_count_list })

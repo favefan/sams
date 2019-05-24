@@ -34,13 +34,13 @@
             data:['报名人数']
         },
         xAxis: {
-            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            data: {{ activity_name_list|safe }}
         },
         yAxis: {},
         series: [{
             name: '报名人数',
             type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
+            data: {{ activity_entry_count_list|safe }}
         }]
     };
 
@@ -53,13 +53,13 @@
             data:['报名活动数']
         },
         xAxis: {
-            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            data: {{ student_name_list|safe }}
         },
         yAxis: {},
         series: [{
             name: '报名活动数',
             type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
+            data: {{ student_entry_count_list|safe }}
         }]
     };
 
