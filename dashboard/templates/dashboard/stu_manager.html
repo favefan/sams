@@ -65,8 +65,10 @@
         <td>{{ stu.account_status }}</td>
         <td>
             <!-- <a class="btn btn-default btn-xs" href="#" style="margin-top:0">修改</a>  -->
+            <a class="btn btn-default btn-xs" href="{% url 'dashboard:stu_info' stu.student_ID  %}"
+                >详情</a>
             <a class="btn btn-danger btn-xs" href="{% url 'dashboard:delete_student' stu.student_ID  %}"
-                style="margin-top:0">删除</a>
+                >删除</a>
         </td>
     </tr>
     {% endfor %}

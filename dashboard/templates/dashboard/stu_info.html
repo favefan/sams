@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}学生管理{% endblock %}
+{% block table_title %}
+<ol class="breadcrumb">
+    <li><a href="/dashboard/stu_manager/">学生管理</a></li>
+    <li><a>学生详情</a></li>
+    <li><a class="active">{{ student.name }}</a></li>
+</ol>
+{% endblock %}
+{% block font_content %}
+<div>
+    <ul class="list-group">
+        <li class="list-group-item">
+            学生姓名：{{ student.name }}
+        </li>
+        <li class="list-group-item">
+            学生学号：{{ student.student_ID }}
+        </li>
+        <li class="list-group-item">
+            学生班级：{{ student.enroll_year }}级{{ student.major }}{{ student.department }}班
+        </li>
+        <li class="list-group-item">
+            学生参与的活动数量：{{ act_count }}
+        </li>
+        <li class="list-group-item">
+            学生得分合计：第二课堂加分：{{ scmark }}, 思想品德加分：{{ thmark }}
+        </li>
+    </ul>
+</div>
+<h4>&nbsp;&nbsp; 学生参与的活动</h4>
+{% endblock %}
+{% block table_content %}
+<thead>
+    <tr>
+        <th>活动序号</th>
+        <th>活动名称</th>
+        <th>活动人数</th>
+        <th>开始日期</th>
+        <th>结束日期</th>
+        <th>获得奖项</th>
+        <th>获得分数</th>
+    </tr>
+</thead>
+<tbody>
+    {% if mine_entry_list %}
+    {% for entry in mine_entry_list %}
+    <tr>
+        <td>{{ entry.activity.activity_ID }}</td>
+        <td>{{ entry.activity.name }}</td>
+        <td>{{ entry.activity.capacity }}</td>
+        <td>{{ entry.activity.start_date|date:'Y-m-d H:i:s' }}</td>
+        <td>{{ entry.activity.end_date|date:'Y-m-d H:i:s' }}</td>
+        <td>{{ entry.awards }}</td>
+        <td>{{ entry.score_kind }}:{{ entry.score }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td>无数据</td>
+    </tr>
+    {% endif %}
+</tbody>
+{% endblock %}

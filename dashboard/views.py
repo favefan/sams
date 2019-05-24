@@ -295,6 +295,21 @@ def act_info(request, activity_ID):
     return render(request, 'dashboard/act_info.html', { 'act': activity, 'entry_list': entry_list, 'count': entry_list.count() })
 
 @login_required
+@permission_required('dashboard.change_student', raise_exception=True)
+def stu_info(request, student_ID):
+    scmark = 0
+    thmark = 0
+    student = Student.objects.get(student_ID=student_ID)
+    mine_entry_list = Entrylist.objects.filter(student=student)
+    my_act_count = mine_entry_list.count()
+    for one in mine_entry_list:
+        if '第二课堂' in one.score_kind:
+            scmark = scmark + one.score
+        if '思想品德' in one.score_kind:
+            thmark = thmark + one.score
+    return render(request, 'dashboard/stu_info.html', { 'student':student, 'mine_entry_list': mine_entry_list, 'act_count': my_act_count, 'scmark': scmark, 'thmark': thmark })
+
+@login_required
 @permission_required('dashboard.change_activity', raise_exception=True)
 def edit_act(request, activity_ID):
     activity = Activity.objects.get(activity_ID=activity_ID)
