@@ -96,6 +96,28 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="downModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">文件下载</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" >
+                        <div class="col-lg-12" id="dispath">
+
+                        </div>
+                    </div><!-- /.row -->
+                </div>
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="en_sub" type="button" class="btn btn-primary">确定</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block act_manager %}active{% endblock %}
 {% block modal_button %}
@@ -133,6 +155,7 @@
             <a class="btn btn-default btn-xs" data-toggle="modal" data-target="#editModal">修改信息</a>
             <a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addModal">添加报名</a>
             <a class="btn btn-success btn-xs" href="{% url 'dashboard:shared' act.activity_ID %}">分享活动</a>
+            <a class="btn btn-warning btn-xs" id="makeBook" data-toggle="modal" data-target="#downModal">生成报表</a>
             <a class="btn btn-danger btn-xs" href="">删除活动</a>
         </li>
     </ul>
@@ -271,5 +294,17 @@
         modal.find('#award').val(award)
         modal.find('#score_kind').val(score_kind)
         modal.find('#score').val(score)
-	})
+    })
+    $('#makeBook').click(function(){
+        var dispath = $('#dispath')
+        dispath.append('系统正在生成，请稍等...')
+        $.get("{% url 'dashboard:get_report' act.activity_ID %}", function (result) {
+            dispath.empty()
+            dispath.append('<a href="' + result + '">' + result + '</a>')
+        })
+    })
+    $('#downModal').on('hidden.bs.modal', function (e) {
+        var dispath = $('#dispath')
+        dispath.empty()
+    })
 </script>{% endblock %}

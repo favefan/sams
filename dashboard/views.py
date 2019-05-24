@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404, reverse
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, FileResponse, StreamingHttpResponse
 from django.db import models
 from django.db.models import Q
 from dashboard.models import User, Student, Activity, Entrylist
@@ -10,6 +9,10 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils import timezone
 from django.core import serializers
 import json
+from openpyxl import *
+import os,sys
+from tempfile import NamedTemporaryFile
+import codecs
 
 login_page = 'dashboard/login.html'
 account_manager_page = 'dashboard/account_manager.html'
@@ -79,8 +82,8 @@ def index(request):
                 scmark = scmark + one.score
             if '思想品德' in one.score_kind:
                 thmark = thmark + one.score
-        if mine_entry_list.exists():
-            return render(request, 'dashboard/index.html', {'mine_entry_list': mine_entry_list, 'act_count': my_act_count, 'scmark': scmark, 'thmark': thmark })
+
+        return render(request, 'dashboard/index.html', {'mine_entry_list': mine_entry_list, 'act_count': my_act_count, 'scmark': scmark, 'thmark': thmark })
 
 @login_required
 @permission_required('dashboard.add_student', raise_exception=True)
@@ -378,3 +381,33 @@ def any_login(request):
             return HttpResponse(warning_null_value)
     else:
         return HttpResponse('Ops!')
+
+def get_report(request, activity_ID):
+    tno = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    title = ['序号', '姓名', '学号', '班级', '获得奖项', '加分类型', '分数']
+    activity = Activity.objects.get(activity_ID=activity_ID)
+    entry_list = Entrylist.objects.filter(activity=activity)
+    wb = Workbook()
+    ws = wb.active
+    i = 0
+    for t in tno:
+        ws[t + '1'] = title[i]
+        i = i + 1
+    i = 2
+    for one in entry_list:
+        ws['A' + str(i)] = i - 1
+        ws['B' + str(i)] = one.student.name
+        ws['C' + str(i)] = str(one.student.student_ID)
+        ws['D' + str(i)] = str(one.student.enroll_year) + '级' + one.student.major + str(one.student.department) + '班'
+        ws['E' + str(i)] = one.awards
+        ws['F' + str(i)] = one.score_kind
+        ws['G' + str(i)] = one.score
+        i = i + 1
+    file_name = activity.name
+    wb.save(os.path.abspath('./dashboard/static/dashboard/upload/' + activity.name + '.xlsx'))
+    # file = codecs.open(str(activity_ID) + '.xlsx', 'rb', encoding= u'utf-8', errors='ignore')
+    # response = StreamingHttpResponse(file)
+    # response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    # response['Content-Disposition'] = 'attachment;filename=活动' + file_name + '的报名详情.xlsx'
+
+    return HttpResponse('/static/dashboard/upload/' + activity.name + '.xlsx')

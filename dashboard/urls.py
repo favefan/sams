@@ -26,4 +26,5 @@ urlpatterns = [
     path('award_give/', views.award_give, name="award_give"),
     path('shared?act_id=<int:activity_ID>', views.shared, name="shared"),
     path('any_login/', views.any_login, name="any_login"),
+    path('get_report?act_id=<int:activity_ID>', views.get_report, name="get_report"),
 ]

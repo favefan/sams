@@ -45,7 +45,7 @@ class Entrylist(models.Model):
     student = models.ForeignKey(Student, null=False, on_delete=models.CASCADE) #, on_delete=models.CASCADE
     activity = models.ForeignKey(Activity, null=False, on_delete=models.CASCADE) #, on_delete=models.CASCADE
     entry_date = models.DateTimeField(default=timezone.now)
-    awards = models.CharField(max_length=200, null=True, blank=True)
-    score_kind = models.CharField(max_length=100, null=True, blank=True)
+    awards = models.CharField(max_length=200, null=True, blank=True, default='未设置')
+    score_kind = models.CharField(max_length=100, null=True, blank=True, default='未设置')
     score = models.FloatField(default=0, null=True, blank=True)
 
