@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}数据分析{% endblock %}
+{% block extra_css %}
+<script src="{% static 'dashboard/javascript/echarts.min.js' %}"></script>
+{% endblock %}
+{% block graph_data %}active{% endblock %}
+{% block font_content %}
+<h3 class="col-lg-12">数据图表</h3>
+{% endblock %}
+{% block extra_content %}
+<div class="row">
+    <div id="act_entry_count" class="col-xs-12 col-lg-6" style="height: 300px"></div>
+    <div id="stu_entry_count" class="col-xs-12 col-lg-6" style="height: 300px"></div>
+</div>
+{% endblock %}
+{% block table_content %}
+
+{% endblock %}
+{% block extra_js %}
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var actChart = echarts.init(document.getElementById('act_entry_count'));
+    var stuChart = echarts.init(document.getElementById('stu_entry_count'));
+
+    // 指定图表的配置项和数据
+    var actOption = {
+        title: {
+            text: '活动报名人数排行'
+        },
+        tooltip: {},
+        legend: {
+            data:['报名人数']
+        },
+        xAxis: {
+            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+        },
+        yAxis: {},
+        series: [{
+            name: '报名人数',
+            type: 'bar',
+            data: [5, 20, 36, 10, 10, 20]
+        }]
+    };
+
+    var stuOption = {
+        title: {
+            text: '学生报名数量排行'
+        },
+        tooltip: {},
+        legend: {
+            data:['报名活动数']
+        },
+        xAxis: {
+            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+        },
+        yAxis: {},
+        series: [{
+            name: '报名活动数',
+            type: 'bar',
+            data: [5, 20, 36, 10, 10, 20]
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    actChart.setOption(actOption);
+    stuChart.setOption(stuOption);
+</script>
+{% endblock %}

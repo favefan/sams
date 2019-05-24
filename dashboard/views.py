@@ -43,6 +43,17 @@ def auto_red_html(message, red_url):
                     <a href="' + red_url + '">此处</a>\
                 直接跳转。</p>\
             </body>'
+
+def entry_count_update(student, activity):
+    act_count = Entrylist.objects.filter(student=student).count()
+    stu_count = Entrylist.objects.filter(activity=activity).count()
+    student.entry_count = act_count
+    student.save()
+    activity.entry_count = stu_count
+    activity.save()
+    return 
+
+
 ###
 
 def log_in(request):
@@ -285,6 +296,7 @@ def enroll(request, activity_ID):
     else:
         enroll_activity = Entrylist(student=student, activity=activity, entry_date=timezone.now())
         enroll_activity.save()
+        entry_count_update(student, activity)
         return HttpResponseRedirect(reverse('dashboard:open_acts'))
 
 @login_required
@@ -354,6 +366,7 @@ def manual_enroll(request, activity_ID, student_ID):
     else:
         enroll_activity = Entrylist(student=student, activity=activity, entry_date=timezone.now())
         enroll_activity.save()
+        entry_count_update(student, activity)
         return HttpResponse('200')
 
 @login_required
@@ -426,3 +439,6 @@ def get_report(request, activity_ID):
     # response['Content-Disposition'] = 'attachment;filename=活动' + file_name + '的报名详情.xlsx'
 
     return HttpResponse('/static/dashboard/upload/' + activity.name + '.xlsx')
+
+def graph_data(request):
+    return render(request, 'dashboard/graph_data.html')

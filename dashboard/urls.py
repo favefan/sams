@@ -28,4 +28,5 @@ urlpatterns = [
     path('any_login/', views.any_login, name="any_login"),
     path('get_report?act_id=<int:activity_ID>', views.get_report, name="get_report"),
     path('stu_info?stu_id=<int:student_ID>', views.stu_info, name="stu_info"),
+    path('graph_data/', views.graph_data, name="graph_data"),
 ]

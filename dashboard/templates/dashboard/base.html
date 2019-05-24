@@ -40,6 +40,7 @@
           <li class="{% block open_acts %}{% endblock %}"><a href="/dashboard/open_acts/">公开活动</a></li>
           {% if perms.dashboard.add_activity %}
           <li class="{% block act_manager %}{% endblock %}"><a href="/dashboard/act_manager/">活动管理</a></li>
+          <li class="{% block graph_data %}{% endblock %}"><a href="/dashboard/graph_data/">数据分析</a></li>
           {% endif %}
           {% if user.is_superuser %}
           <li class="{% block stu_manager %}{% endblock %}"><a href="/dashboard/stu_manager/">学生管理</a></li>

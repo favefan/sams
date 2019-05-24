@@ -10,8 +10,7 @@ class Student(models.Model):
     major = models.CharField(max_length=50, default='undef')
     enroll_year = models.PositiveSmallIntegerField(default=0000)
     schooling_year = models.PositiveSmallIntegerField(default=4)
-    account_status = models.CharField(max_length=20, default='未创建', null=False)
-    # system_password = models.CharField(max_length=300, default='000000')
+    entry_count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -28,17 +27,10 @@ class Activity(models.Model):
     capacity = models.PositiveSmallIntegerField(default=20)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    entry_count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
-
-# class Organizer(models.Model):
-#     system_ID = models.IntegerField(unique=True, null=False, primary_key=True)
-#     name = models.CharField(max_length=200, default='AnymousOrganizer')
-#     system_password = models.CharField(max_length=300, default='000000')
-
-#     def __str__(self):
-#         return self.name
 
 class Entrylist(models.Model):
     entry_no = models.AutoField(unique=True, null=False, primary_key=True)
