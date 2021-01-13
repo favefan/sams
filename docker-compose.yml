@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  db:
+    image: mariadb:10.3
+    volumes:
+      - app-data:/var/lib/mysql
+    environment: 
+      - MYSQL_ROOT_PASSWORD=000000
+      - MYSQL_DATABASE=sams
+      - MYSQL_ROOT_HOST=%
+    networks: 
+      - app-net
+    restart: always
+
+  app:
+    build: .
+    command: sh ./start.sh
+    ports:
+      - 8000:8000
+    networks: 
+      - app-net
+    restart: always
+
+networks:
+  app-net:
+
+volumes:
+  app-data:
