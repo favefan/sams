@@ -119,7 +119,10 @@ def account_manager(request):
 @permission_required('dashboard.add_activity', raise_exception=True)
 def act_manager(request):
     organizer = User.objects.get(id=request.session.get('_auth_user_id'))
-    mine_acts_list = Activity.objects.filter(organizer=organizer)
+    if organizer.is_superuser:
+        mine_acts_list = Activity.objects.all()
+    else:
+        mine_acts_list = Activity.objects.filter(organizer=organizer)
     return render(request, 'dashboard/act_manager.html', { 'mine_acts_list': mine_acts_list })
 
 # 信息修改页面
@@ -416,7 +419,7 @@ def shared(request, activity_ID):
     count = Entrylist.objects.filter(activity=activity).count()
     return render(request, 'dashboard/shared.html', { 'act': activity, 'count': count })
 
-#  #
+# #
 def any_login(request):
     if request.method == 'POST':
         if request.POST:
