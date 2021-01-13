@@ -23,6 +23,7 @@ warning_null_value = '用户名或密码不能为空'
 sign_up_success = 'Sign up success! Please sign in.'
 
 ###Instrumental function
+# 权限组的初始化
 def get_or_create_group(group_name, codename_list):
     try:
         group = Group.objects.get(name=group_name)
@@ -33,6 +34,7 @@ def get_or_create_group(group_name, codename_list):
         group.save()
     return group
 
+# 网页显示message, 5s后跳转到red_url
 def auto_red_html(message, red_url):
     return  message + \
             '<head>\
@@ -44,6 +46,7 @@ def auto_red_html(message, red_url):
                 直接跳转。</p>\
             </body>'
 
+# 学生报名活动数与活动报名学生数计数更新
 def entry_count_update(student, activity):
     act_count = Entrylist.objects.filter(student=student).count()
     stu_count = Entrylist.objects.filter(activity=activity).count()
@@ -53,9 +56,8 @@ def entry_count_update(student, activity):
     activity.save()
     return 
 
-
 ###
-
+# 登录
 def log_in(request):
     if request.method == 'POST':
         if request.POST:
@@ -73,10 +75,12 @@ def log_in(request):
     else:
         return render(request, login_page)
 
+# 登出
 def log_out(request):
     logout(request)
     return HttpResponseRedirect(reverse('dashboard:login'))
 
+# 登录和未登录情况下不同的网站主页初始化
 @login_required
 def index(request):
     current_user = request.user
@@ -96,18 +100,21 @@ def index(request):
 
         return render(request, 'dashboard/index.html', {'mine_entry_list': mine_entry_list, 'act_count': my_act_count, 'scmark': scmark, 'thmark': thmark })
 
+# 学生管理页面
 @login_required
 @permission_required('dashboard.add_student', raise_exception=True)
 def stu_manager(request):
     stus_list = Student.objects.all()
     return render(request, 'dashboard/stu_manager.html', { 'stus_list': stus_list })
 
+# 账户管理页面
 @login_required
 @permission_required('dashboard.add_user', raise_exception=True)
 def account_manager(request):
     accounts_list = User.objects.all()
     return render(request, 'dashboard/account_manager.html', { 'accounts_list': accounts_list })
 
+# 活动管理页面
 @login_required
 @permission_required('dashboard.add_activity', raise_exception=True)
 def act_manager(request):
@@ -115,15 +122,18 @@ def act_manager(request):
     mine_acts_list = Activity.objects.filter(organizer=organizer)
     return render(request, 'dashboard/act_manager.html', { 'mine_acts_list': mine_acts_list })
 
+# 信息修改页面
 @login_required
 def info_edit(request):
     return render(request, 'dashboard/info_edit.html')
 
+# 获取公开活动
 @login_required
 def open_acts(request):
     open_acts_list = Activity.objects.all()
     return render(request, 'dashboard/open_acts.html', { 'open_acts_list': open_acts_list })
 
+# 创建学生对象(自动创建对象对应账号)
 @login_required
 @permission_required('dashboard.add_student', raise_exception=True)
 def create_student(request):
@@ -173,6 +183,7 @@ def create_student(request):
             #return render(request, centre_page, {'result_for_cs': 'Student and login account create success.username is: ' + username + ' , and password is: ' + password })
         #return render(request, centre_page, { 'result': [stu_id, stu_name, sex, depart, major, en_year, school_year] })
 
+# 创建账号
 @login_required
 @permission_required('dashboard.add_user', raise_exception=True)
 def create_account(request):
@@ -205,6 +216,7 @@ def create_account(request):
     else:
         return render(request, account_manager_page)
 
+# 创建活动
 @login_required
 @permission_required('dashboard.add_activity', raise_exception=True)
 def create_activity(request):
@@ -233,7 +245,8 @@ def create_activity(request):
         return HttpResponse('输入内容不能为空。')
     #return HttpResponseRedirect(reverse('dashboard:index'))
     #return render(request, centre_page, { 'result_for_ca': [act_name, intro, organizer, create_date, capacity, start_date, end_date]})
-    
+
+# 删除活动
 @login_required
 @permission_required('dashboard.delete_activity', raise_exception=True)
 def delete_activity(request, activity_ID):
@@ -242,6 +255,7 @@ def delete_activity(request, activity_ID):
         act.delete()
     return HttpResponseRedirect(reverse('dashboard:index'))
 
+# 删除学生对象
 @login_required
 @permission_required('dashboard.delete_student', raise_exception=True)
 def delete_student(request, student_ID):
@@ -253,6 +267,7 @@ def delete_student(request, student_ID):
             stu_account.delete()
     return HttpResponseRedirect(reverse('dashboard:stu_manager'))
 
+# 删除账号(关联了学生账号需要删除学生对象)
 @login_required
 @permission_required('dashboard.delete_user', raise_exception=True)
 def delete_account(request, account_ID):
@@ -264,6 +279,7 @@ def delete_account(request, account_ID):
             account.delete()
             return HttpResponseRedirect(reverse('dashboard:account_manager'))
 
+# 账号修改
 @login_required
 def edit_account(request):
     account_id = request.POST['id']
@@ -285,6 +301,7 @@ def edit_account(request):
         else:
             return HttpResponse('Ops!Nothing be submitted.')
 
+# 报名请求
 @login_required
 def enroll(request, activity_ID):
     current_user = request.user
@@ -299,6 +316,7 @@ def enroll(request, activity_ID):
         entry_count_update(student, activity)
         return HttpResponseRedirect(reverse('dashboard:open_acts'))
 
+# 活动信息
 @login_required
 @permission_required('dashboard.change_activity', raise_exception=True)
 def act_info(request, activity_ID):
@@ -306,6 +324,7 @@ def act_info(request, activity_ID):
     entry_list = Entrylist.objects.filter(activity=activity)
     return render(request, 'dashboard/act_info.html', { 'act': activity, 'entry_list': entry_list, 'count': entry_list.count() })
 
+# 学生信息
 @login_required
 @permission_required('dashboard.change_student', raise_exception=True)
 def stu_info(request, student_ID):
@@ -321,6 +340,7 @@ def stu_info(request, student_ID):
             thmark = thmark + one.score
     return render(request, 'dashboard/stu_info.html', { 'student':student, 'mine_entry_list': mine_entry_list, 'act_count': my_act_count, 'scmark': scmark, 'thmark': thmark })
 
+# 活动编辑
 @login_required
 @permission_required('dashboard.change_activity', raise_exception=True)
 def edit_act(request, activity_ID):
@@ -342,8 +362,8 @@ def edit_act(request, activity_ID):
         activity.end_date = end_date
     activity.save()
     return HttpResponse('修改成功!')    
-        
-    
+
+# 活动搜索功能    
 @login_required
 def search(request):
     search_content = request.POST['search_content']
@@ -355,7 +375,8 @@ def search(request):
         return HttpResponse(data, content_type="application/json;charset=utf-8")
     else:
         return HttpResponse('0')
-    
+
+# 手动添加报名信息
 @login_required
 def manual_enroll(request, activity_ID, student_ID):
     activity = Activity.objects.get(activity_ID=activity_ID)
@@ -369,6 +390,7 @@ def manual_enroll(request, activity_ID, student_ID):
         entry_count_update(student, activity)
         return HttpResponse('200')
 
+# 奖项/学分设置
 @login_required
 def award_give(request):
     act_id = request.POST['act_id']
@@ -388,12 +410,13 @@ def award_give(request):
     else:
         return HttpResponse('奖项设置失败，请联系管理员！')
 
+# 活动分享
 def shared(request, activity_ID):
     activity = Activity.objects.get(activity_ID=activity_ID)
     count = Entrylist.objects.filter(activity=activity).count()
     return render(request, 'dashboard/shared.html', { 'act': activity, 'count': count })
 
-
+#  #
 def any_login(request):
     if request.method == 'POST':
         if request.POST:
@@ -410,6 +433,7 @@ def any_login(request):
     else:
         return HttpResponse('Ops!')
 
+# 导出活动报名名单
 def get_report(request, activity_ID):
     tno = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
     title = ['序号', '姓名', '学号', '班级', '获得奖项', '加分类型', '分数']
@@ -432,14 +456,15 @@ def get_report(request, activity_ID):
         ws['G' + str(i)] = one.score
         i = i + 1
     file_name = activity.name
-    wb.save(os.path.abspath('./dashboard/static/dashboard/upload/' + activity.name + '.xlsx'))
+    wb.save(os.path.abspath('./dashboard/static/dashboard/upload/' + str(activity_ID) + '.xlsx'))
     # file = codecs.open(str(activity_ID) + '.xlsx', 'rb', encoding= u'utf-8', errors='ignore')
     # response = StreamingHttpResponse(file)
     # response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     # response['Content-Disposition'] = 'attachment;filename=活动' + file_name + '的报名详情.xlsx'
 
-    return HttpResponse('/static/dashboard/upload/' + activity.name + '.xlsx')
+    return HttpResponse('/static/dashboard/upload/' + str(activity_ID) + '.xlsx')
 
+# 数据可视化
 def graph_data(request):
     activity_name_list = []
     activity_entry_count_list = []

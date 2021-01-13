@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link rel="icon" href="../../favicon.ico"> -->
-    <title>学生活动管理系统 - 登录</title>
+    <title>校园活动管理系统 - 登录</title>
     <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
 </head>
@@ -19,7 +19,7 @@
         <form class="form-signin" action='/dashboard/login/' method='post'>
             {% csrf_token %}
             <h2 class="form-signin-heading text-center"> <span class="glyphicon glyphicon-education"
-                    aria-hidden="true"></span> 学生活动管理系统</h2>
+                    aria-hidden="true"></span> 校园活动管理系统</h2>
             <label for="inputUsername" class="sr-only">Username</label>
             <input type="text" id="uname" name="uname" class="form-control" placeholder="用户名" required autofocus>
             <label for="inputPassword" class="sr-only">Password</label>
