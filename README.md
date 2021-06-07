@@ -1,4 +1,6 @@
-# Student-Activity-Management-System_background
+# Student Activity Management System
+
+# 学生活动管理系统
 
 ## 开发环境
 * Python 3.7 64bit
